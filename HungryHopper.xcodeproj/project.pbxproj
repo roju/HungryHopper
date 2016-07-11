@@ -14,6 +14,9 @@
 		91BDF6A61D306DF5009CE6FF /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91BDF6A41D306DF5009CE6FF /* Main.storyboard */; };
 		91BDF6A81D306DF5009CE6FF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 91BDF6A71D306DF5009CE6FF /* Assets.xcassets */; };
 		91BDF6AB1D306DF5009CE6FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 91BDF6A91D306DF5009CE6FF /* LaunchScreen.storyboard */; };
+		91BDF6B31D342250009CE6FF /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BDF6B21D342250009CE6FF /* Enemy.swift */; };
+		91BDF6B51D34247E009CE6FF /* Enemy.sks in Resources */ = {isa = PBXBuildFile; fileRef = 91BDF6B41D34247E009CE6FF /* Enemy.sks */; };
+		91BDF6B71D342510009CE6FF /* flyingpenguin@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,9 @@
 		91BDF6A71D306DF5009CE6FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91BDF6AA1D306DF5009CE6FF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91BDF6AC1D306DF5009CE6FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		91BDF6B21D342250009CE6FF /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
+		91BDF6B41D34247E009CE6FF /* Enemy.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Enemy.sks; sourceTree = "<group>"; };
+		91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flyingpenguin@2x.png"; path = "Assets.xcassets/flyingpenguin@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +48,8 @@
 		91BDF6901D306DF5009CE6FF = {
 			isa = PBXGroup;
 			children = (
+				91BDF6B41D34247E009CE6FF /* Enemy.sks */,
+				91BDF6B21D342250009CE6FF /* Enemy.swift */,
 				91BDF69B1D306DF5009CE6FF /* HungryHopper */,
 				91BDF69A1D306DF5009CE6FF /* Products */,
 			);
@@ -64,6 +72,7 @@
 				91BDF6A21D306DF5009CE6FF /* GameViewController.swift */,
 				91BDF6A41D306DF5009CE6FF /* Main.storyboard */,
 				91BDF6A71D306DF5009CE6FF /* Assets.xcassets */,
+				91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */,
 				91BDF6A91D306DF5009CE6FF /* LaunchScreen.storyboard */,
 				91BDF6AC1D306DF5009CE6FF /* Info.plist */,
 			);
@@ -131,6 +140,8 @@
 				91BDF69F1D306DF5009CE6FF /* GameScene.sks in Resources */,
 				91BDF6AB1D306DF5009CE6FF /* LaunchScreen.storyboard in Resources */,
 				91BDF6A81D306DF5009CE6FF /* Assets.xcassets in Resources */,
+				91BDF6B51D34247E009CE6FF /* Enemy.sks in Resources */,
+				91BDF6B71D342510009CE6FF /* flyingpenguin@2x.png in Resources */,
 				91BDF6A61D306DF5009CE6FF /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -142,6 +153,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				91BDF6B31D342250009CE6FF /* Enemy.swift in Sources */,
 				91BDF6A11D306DF5009CE6FF /* GameScene.swift in Sources */,
 				91BDF6A31D306DF5009CE6FF /* GameViewController.swift in Sources */,
 				91BDF69D1D306DF5009CE6FF /* AppDelegate.swift in Sources */,
@@ -296,6 +308,7 @@
 				91BDF6B11D306DF5009CE6FF /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

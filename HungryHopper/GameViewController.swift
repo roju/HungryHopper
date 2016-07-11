@@ -3,7 +3,7 @@
 //  HungryHopper
 //
 //  Created by Ross Justin on 7/8/16.
-//  Copyright (c) 2016 Ross Jusrin. All rights reserved.
+//  Copyright (c) 2016 Ross Justin. All rights reserved.
 //
 
 import UIKit
