@@ -12,7 +12,7 @@ var hero:SKSpriteNode!
 var isTouching = false;
 let fixedDelta: CFTimeInterval = 1.0/60.0 /* 60 FPS */
 var enemyTimer: CFTimeInterval = 0
-let enemyDelaySeconds:CFTimeInterval = 0.01
+let enemyDelaySeconds:CFTimeInterval = 0.5
 var enemies = Set<Enemy>()
 
 class GameScene: SKScene {
@@ -79,6 +79,8 @@ class GameScene: SKScene {
             enemyPositionX = 320 + 100
             enemy.direction = .Left
         }
+        
+        enemy.setScale(CGFloat(arc4random()%5))
         
         enemy.position = CGPoint(x: enemyPositionX, y:Int(arc4random() % 480))
         
