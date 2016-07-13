@@ -12,6 +12,7 @@ import SpriteKit
 class Enemy:SKSpriteNode {
     var direction:MovingDirection = .Right
     var sizeValue:CGFloat = 1
+    var movementSpeed:CGFloat = 1
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
         super.init(texture: texture, color: color, size: size)
@@ -19,6 +20,6 @@ class Enemy:SKSpriteNode {
     
     required init (coder aDecoder: NSCoder){
         super.init(coder:aDecoder)!
-        userInteractionEnabled = true
+        userInteractionEnabled = false
     }
 }

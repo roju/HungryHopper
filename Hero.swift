@@ -18,6 +18,6 @@ class Hero: SKSpriteNode {
     
     required init (coder aDecoder: NSCoder){
         super.init(coder:aDecoder)!
-        userInteractionEnabled = true
+        userInteractionEnabled = false
     }
 }

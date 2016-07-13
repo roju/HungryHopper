@@ -47,9 +47,9 @@
 		91BDF6A71D306DF5009CE6FF /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		91BDF6AA1D306DF5009CE6FF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		91BDF6AC1D306DF5009CE6FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		91BDF6B21D342250009CE6FF /* EnemyReferenceNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EnemyReferenceNode.swift; sourceTree = "<group>"; };
-		91BDF6B41D34247E009CE6FF /* Enemy.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Enemy.sks; sourceTree = "<group>"; };
-		91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flyingpenguin@2x.png"; path = "Assets.xcassets/flyingpenguin@2x.png"; sourceTree = "<group>"; };
+		91BDF6B21D342250009CE6FF /* EnemyReferenceNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = EnemyReferenceNode.swift; path = ../EnemyReferenceNode.swift; sourceTree = "<group>"; };
+		91BDF6B41D34247E009CE6FF /* Enemy.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = Enemy.sks; path = ../Enemy.sks; sourceTree = "<group>"; };
+		91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "flyingpenguin@2x.png"; path = "HungryHopper/Assets.xcassets/flyingpenguin@2x.png"; sourceTree = "<group>"; };
 		91BDF6B91D3574DB009CE6FF /* CGFloat+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGFloat+Extensions.swift"; sourceTree = "<group>"; };
 		91BDF6BA1D3574DB009CE6FF /* CGPoint+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGPoint+Extensions.swift"; sourceTree = "<group>"; };
 		91BDF6BB1D3574DB009CE6FF /* CGVector+Extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CGVector+Extensions.swift"; sourceTree = "<group>"; };
@@ -62,12 +62,12 @@
 		91BDF6C21D3574DB009CE6FF /* SKTEffects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTEffects.swift; sourceTree = "<group>"; };
 		91BDF6C31D3574DB009CE6FF /* SKTTimingFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SKTTimingFunctions.swift; sourceTree = "<group>"; };
 		91BDF6C41D3574DB009CE6FF /* Vector3.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector3.swift; sourceTree = "<group>"; };
-		91BDF6D11D358210009CE6FF /* Hero.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hero.swift; sourceTree = "<group>"; };
-		91BDF6D31D358229009CE6FF /* Hero.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Hero.sks; sourceTree = "<group>"; };
+		91BDF6D11D358210009CE6FF /* Hero.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Hero.swift; path = ../Hero.swift; sourceTree = "<group>"; };
+		91BDF6D31D358229009CE6FF /* Hero.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; name = Hero.sks; path = ../Hero.sks; sourceTree = "<group>"; };
 		91BDF6D51D358283009CE6FF /* bunny1@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "bunny1@2x.png"; path = "HungryHopper/Assets.xcassets/bunny1@2x.png"; sourceTree = "<group>"; };
 		91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MSButtonNode.swift; path = HungryHopper/MSButtonNode.swift; sourceTree = "<group>"; };
 		91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MSReferenceNode.swift; path = HungryHopper/MSReferenceNode.swift; sourceTree = "<group>"; };
-		91D08B751D35B3930092D664 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Enemy.swift; sourceTree = "<group>"; };
+		91D08B751D35B3930092D664 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Enemy.swift; path = ../Enemy.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,15 +84,10 @@
 		91BDF6901D306DF5009CE6FF = {
 			isa = PBXGroup;
 			children = (
-				91BDF6D51D358283009CE6FF /* bunny1@2x.png */,
-				91BDF6B41D34247E009CE6FF /* Enemy.sks */,
-				91D08B751D35B3930092D664 /* Enemy.swift */,
-				91BDF6B21D342250009CE6FF /* EnemyReferenceNode.swift */,
-				91BDF6D31D358229009CE6FF /* Hero.sks */,
-				91BDF6D11D358210009CE6FF /* Hero.swift */,
 				91BDF69B1D306DF5009CE6FF /* HungryHopper */,
 				91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */,
 				91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */,
+				91D08B771D36C01E0092D664 /* images */,
 				91BDF69A1D306DF5009CE6FF /* Products */,
 				91BDF6B81D3574DB009CE6FF /* SKTUtils */,
 			);
@@ -109,13 +104,17 @@
 		91BDF69B1D306DF5009CE6FF /* HungryHopper */ = {
 			isa = PBXGroup;
 			children = (
+				91BDF6B41D34247E009CE6FF /* Enemy.sks */,
+				91D08B751D35B3930092D664 /* Enemy.swift */,
+				91BDF6B21D342250009CE6FF /* EnemyReferenceNode.swift */,
+				91BDF6D31D358229009CE6FF /* Hero.sks */,
+				91BDF6D11D358210009CE6FF /* Hero.swift */,
 				91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */,
 				91BDF69E1D306DF5009CE6FF /* GameScene.sks */,
 				91BDF6A01D306DF5009CE6FF /* GameScene.swift */,
 				91BDF6A21D306DF5009CE6FF /* GameViewController.swift */,
 				91BDF6A41D306DF5009CE6FF /* Main.storyboard */,
 				91BDF6A71D306DF5009CE6FF /* Assets.xcassets */,
-				91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */,
 				91BDF6A91D306DF5009CE6FF /* LaunchScreen.storyboard */,
 				91BDF6AC1D306DF5009CE6FF /* Info.plist */,
 			);
@@ -140,6 +139,15 @@
 			);
 			name = SKTUtils;
 			path = HungryHopper/SKTUtils;
+			sourceTree = "<group>";
+		};
+		91D08B771D36C01E0092D664 /* images */ = {
+			isa = PBXGroup;
+			children = (
+				91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */,
+				91BDF6D51D358283009CE6FF /* bunny1@2x.png */,
+			);
+			name = images;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

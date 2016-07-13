@@ -32,7 +32,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         isTouching = true
         
-        //hero.physicsBody?.applyImpulse(CGVectorMake(0, 50))
+        hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
+        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 8))
         
         /*
         for touch in touches {
@@ -42,14 +43,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         isTouching = false
+        
     }
    
     override func update(currentTime: CFTimeInterval) {
         /* Called before each frame is rendered */
         
-        
         if isTouching {
-            hero.hero.physicsBody!.applyImpulse(CGVectorMake(0, 5))
+            //hero.hero.physicsBody!.applyImpulse(CGVectorMake(0, 1))
         }
         
         if enemyTimer >= enemyDelaySeconds {
@@ -65,11 +66,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 //print("removed enemy at: \(enemy.position.x)")
                 enemies.remove(enemy)
+                
                 enemy.removeFromParent()
             }
         }
         
         enemyTimer += fixedDelta
+        
+        // keep hero centered in X
         
         if hero.hero.position.x > screenWidth / 2 {
             hero.hero.position.x = screenWidth / 2
@@ -77,6 +81,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if hero.hero.position.x < screenWidth / 2 {
             hero.hero.position.x = screenWidth / 2
         }
+         
     }
     
     func addEnemy(){
@@ -84,14 +89,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let enemyReferenceNode = EnemyReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         let enemy = enemyReferenceNode.enemySprite
         
+        let randomSpeed = randomBetweenNumbers(0.5, secondNum: 2)
+        enemy.movementSpeed = randomSpeed
+        
         var enemyPositionX:CGFloat = -100
         
         if arc4random_uniform(11) > 5 { // random 50%
             enemyPositionX = screenWidth + 100
             enemyReferenceNode.enemySprite.direction = .Left
+            enemy.movementSpeed = -enemy.movementSpeed
         }
         
-        let randomSize = randomBetweenNumbers(1, secondNum: 5)
+        let randomSize = randomBetweenNumbers(0.4, secondNum: 3)
         enemy.setScale(randomSize)
         enemy.sizeValue = randomSize
         
@@ -103,12 +112,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func moveEnemies(){
         for enemy in enemies{
-            var speed = 2
-            if enemy.direction == .Left {
-                speed = -speed
-            }
-            
-            let move = SKAction.moveBy(CGVector(dx: speed, dy: 0), duration: 0.5)
+            let move = SKAction.moveBy(CGVector(dx: enemy.movementSpeed, dy: 0), duration: 0.5)
             enemy.runAction(move)
         }
     }
@@ -120,6 +124,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func didBeginContact(contact: SKPhysicsContact) {
         //print("contact")
         
+        func runContactActions(hero:Hero, enemy:Enemy){
+            //print("enemy size: \(enemy.sizeValue)")
+            //print("hero size: \(hero.sizeValue)")
+            
+            if hero.sizeValue > enemy.sizeValue {
+                enemies.remove(enemy)
+                enemy.removeFromParent()
+                hero.sizeValue += 0.05
+                hero.runAction(SKAction.scaleTo(hero.sizeValue, duration: 0.2))
+            }
+            else{
+                print("DEAD")
+            }
+        }
+        
         /* Get references to bodies involved in collision */
         let contactA:SKPhysicsBody = contact.bodyA
         let contactB:SKPhysicsBody = contact.bodyB
@@ -129,22 +148,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let nodeB = contactB.node!
         
         if (nodeA.name == "hero" && nodeB.name == "enemy"){
-            print("hero contacted enemy")
-            
-            if let enemy = nodeB as? Enemy {
-                print("enemy size: \(enemy.sizeValue)")
-                enemies.remove(enemy)
-                enemy.removeFromParent()
-            }
+            runContactActions(nodeA as! Hero, enemy: nodeB as! Enemy)
         }
+        
+        // doesn't seem to run, here just in case
         else if (nodeA.name == "enemy" && nodeB.name == "hero") {
-            print("enemy contacted hero")
-            
-            if let enemy = contact.bodyA.node as? Enemy {
-                print("enemy size: \(enemy.sizeValue)")
-                enemies.remove(enemy)
-                enemy.removeFromParent()
-            }
+            runContactActions(nodeB as! Hero, enemy: nodeA as! Enemy)
         }
     }
 }
