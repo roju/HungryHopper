@@ -8,17 +8,25 @@
 
 import SpriteKit
 
-var hero:SKSpriteNode!
-var isTouching = false;
-let fixedDelta: CFTimeInterval = 1.0/60.0 /* 60 FPS */
-var enemyTimer: CFTimeInterval = 0
-let enemyDelaySeconds:CFTimeInterval = 0.5
-var enemies = Set<Enemy>()
-
-class GameScene: SKScene {
+class GameScene: SKScene, SKPhysicsContactDelegate {
+    
+    var hero:MSReferenceNode!
+    var isTouching = false;
+    let fixedDelta: CFTimeInterval = 1.0/60.0 /* 60 FPS */
+    var enemyTimer: CFTimeInterval = 0
+    let enemyDelaySeconds:CFTimeInterval = 0.5
+    var enemies = Set<Enemy>()
+    let screenHeight:CGFloat = 480.0
+    let screenWidth:CGFloat = 320.0
+    
     override func didMoveToView(view: SKView) {
-        /* Setup your scene here */
-        hero = self.childNodeWithName("//hero") as! SKSpriteNode
+        let resourcePath = NSBundle.mainBundle().pathForResource("Hero", ofType: "sks")
+        hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
+        
+        hero.hero.position = CGPoint(x: screenWidth/2, y:screenHeight/2)
+        addChild(hero)
+        
+        physicsWorld.contactDelegate = self
     }
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -32,7 +40,6 @@ class GameScene: SKScene {
         }
          */
     }
-    
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         isTouching = false
     }
@@ -42,7 +49,7 @@ class GameScene: SKScene {
         
         
         if isTouching {
-            hero.physicsBody!.applyImpulse(CGVectorMake(0, 2))
+            hero.hero.physicsBody!.applyImpulse(CGVectorMake(0, 5))
         }
         
         if enemyTimer >= enemyDelaySeconds {
@@ -53,7 +60,10 @@ class GameScene: SKScene {
         moveEnemies()
         
         for enemy in enemies {
-            if enemy.position.x > 500 || enemy.position.x < -100{
+            if (enemy.direction == .Right && enemy.position.x > screenWidth + 200) ||
+                (enemy.direction == .Left && enemy.position.x < -200) {
+                
+                //print("removed enemy at: \(enemy.position.x)")
                 enemies.remove(enemy)
                 enemy.removeFromParent()
             }
@@ -61,42 +71,80 @@ class GameScene: SKScene {
         
         enemyTimer += fixedDelta
         
-        if hero.position.x > 320.0 / 2 {
-            hero.position.x = 320.0 / 2
+        if hero.hero.position.x > screenWidth / 2 {
+            hero.hero.position.x = screenWidth / 2
         }
-        else if hero.position.x < 320.0 / 2 {
-            hero.position.x = 320.0 / 2
+        else if hero.hero.position.x < screenWidth / 2 {
+            hero.hero.position.x = screenWidth / 2
         }
     }
     
     func addEnemy(){
         let resourcePath = NSBundle.mainBundle().pathForResource("Enemy", ofType: "sks")
-        let enemy = Enemy(URL: NSURL (fileURLWithPath: resourcePath!))
-        var enemyPositionX = -100
+        let enemyReferenceNode = EnemyReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
+        let enemy = enemyReferenceNode.enemySprite
         
+        var enemyPositionX:CGFloat = -100
         
         if arc4random_uniform(11) > 5 { // random 50%
-            enemyPositionX = 320 + 100
-            enemy.direction = .Left
+            enemyPositionX = screenWidth + 100
+            enemyReferenceNode.enemySprite.direction = .Left
         }
         
-        enemy.setScale(CGFloat(arc4random()%5))
+        let randomSize = randomBetweenNumbers(1, secondNum: 5)
+        enemy.setScale(randomSize)
+        enemy.sizeValue = randomSize
         
-        enemy.position = CGPoint(x: enemyPositionX, y:Int(arc4random() % 480))
+        enemy.position = CGPoint(x:enemyPositionX, y:randomBetweenNumbers(0, secondNum: screenHeight))
         
-        addChild(enemy)
+        addChild(enemyReferenceNode)
         enemies.insert(enemy)
     }
     
     func moveEnemies(){
         for enemy in enemies{
-            var speed = 5
+            var speed = 2
             if enemy.direction == .Left {
                 speed = -speed
             }
             
             let move = SKAction.moveBy(CGVector(dx: speed, dy: 0), duration: 0.5)
             enemy.runAction(move)
+        }
+    }
+    
+    func randomBetweenNumbers(firstNum: CGFloat, secondNum: CGFloat) -> CGFloat{
+        return CGFloat(arc4random()) / CGFloat(UINT32_MAX) * abs(firstNum - secondNum) + min(firstNum, secondNum)
+    }
+    
+    func didBeginContact(contact: SKPhysicsContact) {
+        //print("contact")
+        
+        /* Get references to bodies involved in collision */
+        let contactA:SKPhysicsBody = contact.bodyA
+        let contactB:SKPhysicsBody = contact.bodyB
+        
+        /* Get references to the physics body parent nodes */
+        let nodeA = contactA.node!
+        let nodeB = contactB.node!
+        
+        if (nodeA.name == "hero" && nodeB.name == "enemy"){
+            print("hero contacted enemy")
+            
+            if let enemy = nodeB as? Enemy {
+                print("enemy size: \(enemy.sizeValue)")
+                enemies.remove(enemy)
+                enemy.removeFromParent()
+            }
+        }
+        else if (nodeA.name == "enemy" && nodeB.name == "hero") {
+            print("enemy contacted hero")
+            
+            if let enemy = contact.bodyA.node as? Enemy {
+                print("enemy size: \(enemy.sizeValue)")
+                enemies.remove(enemy)
+                enemy.removeFromParent()
+            }
         }
     }
 }

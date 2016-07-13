@@ -1,5 +1,5 @@
 //
-//  Enemy.swift
+//  Hero.swift
 //  HungryHopper
 //
 //  Created by Ross Justin on 7/12/16.
@@ -9,8 +9,7 @@
 import Foundation
 import SpriteKit
 
-class Enemy:SKSpriteNode {
-    var direction:MovingDirection = .Right
+class Hero: SKSpriteNode {
     var sizeValue:CGFloat = 1
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
