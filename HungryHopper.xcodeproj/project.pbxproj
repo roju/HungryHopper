@@ -112,11 +112,11 @@
 				91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */,
 				91BDF69E1D306DF5009CE6FF /* GameScene.sks */,
 				91BDF6A01D306DF5009CE6FF /* GameScene.swift */,
-				91BDF6A21D306DF5009CE6FF /* GameViewController.swift */,
 				91BDF6A41D306DF5009CE6FF /* Main.storyboard */,
 				91BDF6A71D306DF5009CE6FF /* Assets.xcassets */,
 				91BDF6A91D306DF5009CE6FF /* LaunchScreen.storyboard */,
 				91BDF6AC1D306DF5009CE6FF /* Info.plist */,
+				91BDF6A21D306DF5009CE6FF /* GameViewController.swift */,
 			);
 			path = HungryHopper;
 			sourceTree = "<group>";
