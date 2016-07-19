@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9153D10C1D3D844900E98242 /* redfish.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10B1D3D844900E98242 /* redfish.png */; };
+		9153D10E1D3D9C3E00E98242 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10D1D3D9C3E00E98242 /* 1.png */; };
 		91BDF69D1D306DF5009CE6FF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */; };
 		91BDF69F1D306DF5009CE6FF /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 91BDF69E1D306DF5009CE6FF /* GameScene.sks */; };
 		91BDF6A11D306DF5009CE6FF /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BDF6A01D306DF5009CE6FF /* GameScene.swift */; };
@@ -38,6 +40,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9153D10B1D3D844900E98242 /* redfish.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redfish.png; path = HungryHopper/Assets.xcassets/RedFish.imageset/redfish.png; sourceTree = "<group>"; };
+		9153D10D1D3D9C3E00E98242 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		91BDF6991D306DF5009CE6FF /* HungryHopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HungryHopper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		91BDF69E1D306DF5009CE6FF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -144,8 +148,10 @@
 		91D08B771D36C01E0092D664 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				9153D10D1D3D9C3E00E98242 /* 1.png */,
 				91BDF6B61D342510009CE6FF /* flyingpenguin@2x.png */,
 				91BDF6D51D358283009CE6FF /* bunny1@2x.png */,
+				9153D10B1D3D844900E98242 /* redfish.png */,
 			);
 			name = images;
 			sourceTree = "<group>";
@@ -213,9 +219,11 @@
 				91BDF6A81D306DF5009CE6FF /* Assets.xcassets in Resources */,
 				91BDF6D41D358229009CE6FF /* Hero.sks in Resources */,
 				91BDF6B51D34247E009CE6FF /* Enemy.sks in Resources */,
+				9153D10C1D3D844900E98242 /* redfish.png in Resources */,
 				91BDF6B71D342510009CE6FF /* flyingpenguin@2x.png in Resources */,
 				91BDF6A61D306DF5009CE6FF /* Main.storyboard in Resources */,
 				91BDF6D61D358283009CE6FF /* bunny1@2x.png in Resources */,
+				9153D10E1D3D9C3E00E98242 /* 1.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

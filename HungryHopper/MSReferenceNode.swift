@@ -11,7 +11,7 @@ import SpriteKit
 class MSReferenceNode: SKReferenceNode {
     
     /* Avatar node connection */
-    var hero: Hero! // Hero!
+    var hero: Hero!
     
     override func didLoadReferenceNode(node: SKNode?) {
         
