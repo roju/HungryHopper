@@ -19,6 +19,7 @@ class GameViewController: UIViewController {
             let skView = self.view as! SKView
             skView.showsFPS = true
             skView.showsNodeCount = true
+            skView.showsPhysics = false // memory will increase slowly if this is enabled
             
             /* Sprite Kit applies additional optimizations to improve rendering performance */
             skView.ignoresSiblingOrder = true

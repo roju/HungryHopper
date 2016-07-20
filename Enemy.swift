@@ -15,7 +15,7 @@ class Enemy:SKSpriteNode {
     var movementSpeed:CGFloat = 1
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
-        super.init(texture: texture, color: color, size: size)
+        super.init(texture: texture, color: UIColor.clearColor(), size: texture!.size())
     }
     
     required init (coder aDecoder: NSCoder){
