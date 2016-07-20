@@ -16,6 +16,7 @@ class Enemy:SKSpriteNode {
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
         super.init(texture: texture, color: UIColor.clearColor(), size: texture!.size())
+        
     }
     
     required init (coder aDecoder: NSCoder){

@@ -17,6 +17,10 @@ enum GameState {
     case Paused, Active, GameOver
 }
 
+enum ObstacleType {
+    case MarchingLine, Door, BackAndForth
+}
+
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var hero:MSReferenceNode!
@@ -32,6 +36,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let gravityInWater:CGFloat = -2.0
     let gravityOutOfWater:CGFloat = -9.0
     var gameState:GameState = .Active
+    
+    //obstacle
+    var obstacles = Set<Obstacle>()
+    var obstacleTimer:CFTimeInterval = 0
+    let obstacleDelaySeconds:CFTimeInterval = 1
+    
     
     override func didMoveToView(view: SKView) {
         background = childNodeWithName("background") as! SKSpriteNode
@@ -55,90 +65,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cam.position = hero.hero.position //CGPoint(x: CGRectGetMidX(self.frame), y: CGRectGetMidY(self.frame))
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
-    }
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        isTouching = true
-        
-        /*
-         impulseX = CGRectGetMidX(self.frame)
-         
-         for touch in touches {
-         if touch == touches.first {
-         //let position = touch.locationInNode(self)
-         let position = touch.locationInView(self.view)
-         impulseX = position.x
-         //print("raw x: \(impulseX)")
-         }
-         }
-         
-         impulseX = impulseX / self.frame.width
-         impulseX *= 2
-         impulseX -= 1.2
-         impulseX /= 15
-         */
-        
-        /*
-         let touch = touches.first
-         let position = touch!.locationInView(self.view)
-         let touchX = position.x
-         //print("raw x: \(touchX)")
-         
-         let middleOfView = (self.view!.frame.width) / 2
-         if touchX > middleOfView {
-         print("touching right side")
-         impulseX = 0.05
-         }
-         else if touchX < middleOfView {
-         print("touching left side")
-         impulseX = -0.05
-         }
-         */
-        
-        //print("xMOD: \(impulseX)")
-        
-        //hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
-        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 0.9))//0.8
-    }
-    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        /* Update to new touch location */
-        
-        /*
-         for touch in touches {
-         //location = touch.locationInNode(self)
-         if touch == touches.first {
-         //let position = touch.locationInNode(self)
-         let position = touch.locationInView(self.view)
-         impulseX = position.x
-         //print("raw x: \(impulseX)")
-         
-         impulseX = impulseX / self.frame.width
-         impulseX *= 2
-         impulseX -= 1.2
-         impulseX /= 15
-         }
-         }
-         */
-        
-        /*
-         let touch = touches.first
-         let position = touch!.locationInView(self.view)
-         let touchX = position.x
-         //print("raw x: \(touchX)")
-         
-         let middleOfView = (self.view!.frame.width) / 2
-         if touchX > middleOfView {
-         //print("touching right side")
-         impulseX = 0.05
-         }
-         else if touchX < middleOfView {
-         //print("touching left side")
-         impulseX = -0.05
-         }
-         */
-    }
-    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        isTouching = false
     }
     
     override func update(currentTime: CFTimeInterval) {
@@ -171,13 +97,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let moveCamToPlayer =  SKAction.moveTo(camPosition, duration: 1.0/60)
             cam.runAction(moveCamToPlayer)
             
+            enemyTimer += fixedDelta
+            obstacleTimer += fixedDelta
+            
+            
+            
+            /*
             if enemyTimer >= enemyDelaySeconds {
-                addRandomEnemy()
+                //addRandomEnemy()
                 enemyTimer = 0
             }
-            moveEnemies()
             
+            if obstacleTimer >= obstacleDelaySeconds{
+                addObstacle()
+                obstacleTimer = 0
+            }
+             */
+ 
+            moveEnemies()
             removeEnemiesOutOfBounds()
+            
+            moveObstacles()
+            removeObstaclesOutOfBounds()
             
             // keep hero centered in X
             /*
@@ -193,14 +134,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func removeEnemiesOutOfBounds() {
         var tempSet:[Enemy] = []
-        
         for enemy in enemies {
             if (enemy.direction == .Right && enemy.position.x > self.frame.width + 500) ||
                 (enemy.direction == .Left && enemy.position.x < -500) {
                 tempSet.append(enemy)
             }
         }
-        enemyTimer += fixedDelta
         
         for enemy in tempSet {
             enemies.remove(enemy)
@@ -252,6 +191,74 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemies.insert(enemy)
         //}
     }
+    
+    func addRectangleMarchingLine(position:CGPoint, size:CGSize, speed:CGFloat, timingGap:CGFloat){
+        
+    }
+    
+    func addObstacle(type:ObstacleType){
+        /*
+        switch type {
+        case .MarchingLine:
+            
+            break
+        case .Door:
+            
+            break
+        case.BackAndForth:
+            
+            break
+        default:
+            break
+            
+        }
+        */
+        let radius:CGFloat = 10
+        let position = CGPoint(x:-300, y:100)
+        //let obstacle = Obstacle.init(circleOfRadius: radius)
+        let obstacle = Obstacle.init(rect:CGRect(origin:position, size:CGSizeMake(100, 20)))
+        obstacle.name = "obs"
+        
+        obstacle.physicsBody = SKPhysicsBody.init(circleOfRadius: radius, center: position)
+        obstacle.physicsBody?.dynamic = true
+        obstacle.physicsBody?.affectedByGravity = false
+        obstacle.physicsBody?.categoryBitMask = 8
+        obstacle.physicsBody?.collisionBitMask = 0
+        obstacle.physicsBody?.contactTestBitMask = 1
+        
+        obstacle.zPosition = 1
+        
+        obstacle.position = position
+        obstacle.movementSpeed = 3
+        
+        addChild(obstacle)
+        obstacles.insert(obstacle)
+    }
+    
+    func moveObstacles(){
+        for obstacle in obstacles {
+            let move = SKAction.moveBy(CGVector(dx: obstacle.movementSpeed, dy: 0), duration: 0.5)
+            obstacle.runAction(move)
+        }
+    }
+    
+    func removeObstaclesOutOfBounds(){
+        var tempSet:[Obstacle] = []
+        for obstacle in obstacles {
+            if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 500) ||
+                (obstacle.direction == .Left && obstacle.position.x < -500) {
+                tempSet.append(obstacle)
+            }
+        }
+        enemyTimer += fixedDelta
+        
+        for obstacle in tempSet {
+            obstacles.remove(obstacle)
+            obstacle.removeFromParent()
+        }
+        tempSet.removeAll()
+    }
+    
     /*
      func addEnemyGroup(amount:Int, size:CGFloat, position:CGFloat){
      for i in 1...amount {
@@ -351,5 +358,89 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scene.scaleMode = .AspectFill
         /* Restart game scene */
         skView.presentScene(scene)
+    }
+    
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        isTouching = true
+        
+        /*
+         impulseX = CGRectGetMidX(self.frame)
+         
+         for touch in touches {
+         if touch == touches.first {
+         //let position = touch.locationInNode(self)
+         let position = touch.locationInView(self.view)
+         impulseX = position.x
+         //print("raw x: \(impulseX)")
+         }
+         }
+         
+         impulseX = impulseX / self.frame.width
+         impulseX *= 2
+         impulseX -= 1.2
+         impulseX /= 15
+         */
+        
+        /*
+         let touch = touches.first
+         let position = touch!.locationInView(self.view)
+         let touchX = position.x
+         //print("raw x: \(touchX)")
+         
+         let middleOfView = (self.view!.frame.width) / 2
+         if touchX > middleOfView {
+         print("touching right side")
+         impulseX = 0.05
+         }
+         else if touchX < middleOfView {
+         print("touching left side")
+         impulseX = -0.05
+         }
+         */
+        
+        //print("xMOD: \(impulseX)")
+        
+        //hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
+        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 0.9))//0.8
+    }
+    override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        /* Update to new touch location */
+        
+        /*
+         for touch in touches {
+         //location = touch.locationInNode(self)
+         if touch == touches.first {
+         //let position = touch.locationInNode(self)
+         let position = touch.locationInView(self.view)
+         impulseX = position.x
+         //print("raw x: \(impulseX)")
+         
+         impulseX = impulseX / self.frame.width
+         impulseX *= 2
+         impulseX -= 1.2
+         impulseX /= 15
+         }
+         }
+         */
+        
+        /*
+         let touch = touches.first
+         let position = touch!.locationInView(self.view)
+         let touchX = position.x
+         //print("raw x: \(touchX)")
+         
+         let middleOfView = (self.view!.frame.width) / 2
+         if touchX > middleOfView {
+         //print("touching right side")
+         impulseX = 0.05
+         }
+         else if touchX < middleOfView {
+         //print("touching left side")
+         impulseX = -0.05
+         }
+         */
+    }
+    override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        isTouching = false
     }
 }
