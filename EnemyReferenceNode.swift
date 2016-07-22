@@ -9,10 +9,6 @@
 import Foundation
 import SpriteKit
 
-enum MovingDirection {
-    case Left, Right // change to CGVector?
-}
-
 class EnemyReferenceNode: SKReferenceNode {
     var enemySprite: Enemy!
     

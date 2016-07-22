@@ -12,6 +12,7 @@ import SpriteKit
 class Obstacle:SKShapeNode {
     var direction:MovingDirection = .Right
     var movementSpeed:CGFloat = 1
+    var initialMovementSpeed:CGFloat = 1
     
     override init() {
         super.init()

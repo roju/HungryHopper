@@ -32,6 +32,7 @@
 		9153D1391D3EED3800E98242 /* 22.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D1231D3EED3800E98242 /* 22.png */; };
 		9153D13A1D3EED3800E98242 /* 23.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D1241D3EED3800E98242 /* 23.png */; };
 		9195E3AE1D3FEF440062FA6A /* Obstacle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195E3AD1D3FEF440062FA6A /* Obstacle.swift */; };
+		9195E3B01D402E9B0062FA6A /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195E3AF1D402E9B0062FA6A /* Level.swift */; };
 		91BDF69D1D306DF5009CE6FF /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */; };
 		91BDF69F1D306DF5009CE6FF /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 91BDF69E1D306DF5009CE6FF /* GameScene.sks */; };
 		91BDF6A11D306DF5009CE6FF /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BDF6A01D306DF5009CE6FF /* GameScene.swift */; };
@@ -88,6 +89,7 @@
 		9153D1231D3EED3800E98242 /* 22.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 22.png; sourceTree = "<group>"; };
 		9153D1241D3EED3800E98242 /* 23.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 23.png; sourceTree = "<group>"; };
 		9195E3AD1D3FEF440062FA6A /* Obstacle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Obstacle.swift; path = ../Obstacle.swift; sourceTree = "<group>"; };
+		9195E3AF1D402E9B0062FA6A /* Level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Level.swift; path = ../Level.swift; sourceTree = "<group>"; };
 		91BDF6991D306DF5009CE6FF /* HungryHopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HungryHopper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		91BDF69E1D306DF5009CE6FF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
@@ -154,6 +156,7 @@
 		91BDF69B1D306DF5009CE6FF /* HungryHopper */ = {
 			isa = PBXGroup;
 			children = (
+				9195E3AF1D402E9B0062FA6A /* Level.swift */,
 				9195E3AD1D3FEF440062FA6A /* Obstacle.swift */,
 				91BDF6B41D34247E009CE6FF /* Enemy.sks */,
 				91D08B751D35B3930092D664 /* Enemy.swift */,
@@ -337,6 +340,7 @@
 				91BDF6CC1D3574DB009CE6FF /* SKNode+Extensions.swift in Sources */,
 				91BDF6CE1D3574DB009CE6FF /* SKTEffects.swift in Sources */,
 				91BDF6A11D306DF5009CE6FF /* GameScene.swift in Sources */,
+				9195E3B01D402E9B0062FA6A /* Level.swift in Sources */,
 				91BDF6A31D306DF5009CE6FF /* GameViewController.swift in Sources */,
 				91BDF6C81D3574DB009CE6FF /* Int+Extensions.swift in Sources */,
 				9195E3AE1D3FEF440062FA6A /* Obstacle.swift in Sources */,
