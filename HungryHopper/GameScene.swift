@@ -9,6 +9,10 @@
 /*
  TODO:
  check hero linear damping: sometimes it gets reset to default
+ Update GDD
+ 
+ NOTE:
+ removed addObstacles and moveObstacles
  */
 
 import SpriteKit
@@ -48,7 +52,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var frameCenter:CGFloat = 0
     
     var score = 0
-    var nextGoalHeight:CGFloat = 240
+    var nextGoalHeight:CGFloat = 120
+    
+    var leftBoundary:CGFloat = 0
+    var rightBoundary:CGFloat = 0
     
     //obstacle
     var obstacles = Set<Obstacle>()
@@ -63,6 +70,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         
         frameCenter = self.frame.width / 2
+        rightBoundary = frameCenter + 100
+        leftBoundary = frameCenter - 300
         
         hero.hero.position = CGPoint(x: frameCenter, y: 100) //  + hero.hero.size.width
         addChild(hero)
@@ -71,7 +80,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Camera */
         cam = SKCameraNode() //initialize and assign an instance of SKCameraNode to the cam variable.
-        cam.scaleAsPoint = CGPoint(x: 1.5, y: 1.5) //the scale sets the zoom level of the camera on the given position
+        cam.scaleAsPoint = CGPoint(x: 6.5, y: 6.5) //the scale sets the zoom level of the camera on the given position
         
         self.camera = cam //set the scene's camera to reference cam
         self.addChild(cam) //make the cam a childElement of the scene itself.
@@ -85,31 +94,74 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreLabel.fontColor = UIColor.blackColor()
         cam.addChild(scoreLabel)
         
-        //scoreLabel.position.x = cam.position.x
-        //scoreLabel.position.y = cam.position.y + 100
-        
-        
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
         
-        levels.append(Level.init(timerDelayValue: 1.8, yPosition: 600, rectDimensions: CGSizeMake(70, 20), direction: .Right, speed: 1.8)) // B (visual only)
-        levels.append(Level.init(timerDelayValue: 1.1, yPosition: 480, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (top)
-        levels.append(Level.init(timerDelayValue: 1.0, yPosition: 360, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C
-        levels.append(Level.init(timerDelayValue: 2.1, yPosition: 240, rectDimensions: CGSizeMake(80, 20), direction: .Left, speed: 1.7))
-        levels.append(Level.init(timerDelayValue: 2.0, yPosition: 120, rectDimensions: CGSizeMake(80, 20), direction: .Right, speed: 2.1))
-        // hero starting position
-        levels.append(Level.init(timerDelayValue: 1.8, yPosition: 0, rectDimensions: CGSizeMake(70, 20), direction: .Right, speed: 1.8)) // B
-        levels.append(Level.init(timerDelayValue: 1.1, yPosition: -120, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (bottom)
-        levels.append(Level.init(timerDelayValue: 1.0, yPosition: -240, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C (visual only)
+        let tdvA = 2.7, rdA = CGSizeMake(30, 20), dA:MovingDirection = .Right, sA:CGFloat = 1.6
+        let tdvB = 1.9, rdB = CGSizeMake(20, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
+        let tdvC = 3.3, rdC = CGSizeMake(30, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
+        let tdvD = 1.9, rdD = CGSizeMake(20, 20), dD:MovingDirection = .Left, sD:CGFloat = 1.7
+        let tdvE = 1.8, rdE = CGSizeMake(40, 20), dE:MovingDirection = .Right, sE:CGFloat = 1.7
+        let tdvF = 2.9, rdF = CGSizeMake(40, 20), dF:MovingDirection = .Left, sF:CGFloat = 1.9
+        let tdvG = 3.2, rdG = CGSizeMake(50, 20), dG:MovingDirection = .Right, sG:CGFloat = 2.0
         
-        //addObstacle(levels[0], specifiedPosition: hero.hero.position)
+        
+        
+        levels.append(Level.init(timerDelayValue: tdvG, yPosition: 420, rectDimensions: rdG, direction: dG, speed: sG, levelID:"G"))
+        levels.append(Level.init(timerDelayValue: tdvF, yPosition: 360, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F"))
+        levels.append(Level.init(timerDelayValue: tdvE, yPosition: 300, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E"))
+        levels.append(Level.init(timerDelayValue: tdvD, yPosition: 240, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D"))
+        //--top boundary
+        levels.append(Level.init(timerDelayValue: tdvC, yPosition: 180, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C"))
+        levels.append(Level.init(timerDelayValue: tdvB, yPosition: 120, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B"))
+        levels.append(Level.init(timerDelayValue: tdvA, yPosition:  60, rectDimensions: rdA, direction: dA, speed: sA, levelID:"A"))
+        // hero starting position
+        levels.append(Level.init(timerDelayValue: tdvG, yPosition:    0, rectDimensions: rdG, direction: dG, speed: sG, levelID:"G"))
+        levels.append(Level.init(timerDelayValue: tdvF, yPosition:  -60, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F"))
+        levels.append(Level.init(timerDelayValue: tdvE, yPosition: -120, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E"))
+        levels.append(Level.init(timerDelayValue: tdvD, yPosition: -180, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D"))
+        //-- bottom boundary
+        levels.append(Level.init(timerDelayValue: tdvC, yPosition: -240, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C"))
+        levels.append(Level.init(timerDelayValue: tdvB, yPosition: -300, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B"))
+        levels.append(Level.init(timerDelayValue: tdvA, yPosition: -360, rectDimensions: rdA, direction: dA, speed: sA, levelID:"A"))
+
+        
         /*
+        levels.append(Level.init(timerDelayValue: 2.4, yPosition: 180, rectDimensions: CGSizeMake(70, 20), direction: .Right, speed: 2.0))
+        levels.append(Level.init(timerDelayValue: 2.0, yPosition: 120, rectDimensions: CGSizeMake(80, 20), direction: .Right, speed: 2.2))
+        levels.append(Level.init(timerDelayValue: 2.0, yPosition: 60, rectDimensions: CGSizeMake(80, 20), direction: .Right, speed: 2.1))
+         */
+ 
+        /*
+         levels.append(Level.init(timerDelayValue: 1.8, yPosition: 600, rectDimensions: CGSizeMake(70, 20), direction: .Right, speed: 1.8)) // B (visual only)
+         levels.append(Level.init(timerDelayValue: 1.1, yPosition: 480, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (top)
+         levels.append(Level.init(timerDelayValue: 1.0, yPosition: 360, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C
+         levels.append(Level.init(timerDelayValue: 2.1, yPosition: 240, rectDimensions: CGSizeMake(80, 20), direction: .Left, speed: 1.7))
+         levels.append(Level.init(timerDelayValue: 2.0, yPosition: 120, rectDimensions: CGSizeMake(80, 20), direction: .Right, speed: 2.1))
+         // hero starting position
+         levels.append(Level.init(timerDelayValue: 1.8, yPosition: 0, rectDimensions: CGSizeMake(70, 20), direction: .Right, speed: 1.8)) // B
+         levels.append(Level.init(timerDelayValue: 1.1, yPosition: -120, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (bottom)
+         levels.append(Level.init(timerDelayValue: 1.0, yPosition: -240, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C (visual only)
+         */
+        
         for level in levels {
-            addObstacle(level)
-            if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 500) ||
-                (obstacle.direction == .Left && obstacle.position.x < -500) {
+            var xPos:CGFloat = leftBoundary
+            let spaceBetweenObstacles = CGFloat(level.timerDelayValue*60)
+            
+            if level.direction == .Left {
+                xPos = rightBoundary
+            }
+            
+            for i in 1...10 {
+                addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: CGFloat(level.yPosition)))
+                
+                if level.direction == .Right {
+                    xPos += spaceBetweenObstacles
+                }
+                else {
+                    xPos -= spaceBetweenObstacles
+                }
             }
         }
-         */
     }
     
     //MARK: Update
@@ -123,33 +175,33 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if gameState == .Active {
             /* Called before each frame is rendered */
             gameTimeStamp += fixedDelta
+            let yBoundary:CGFloat = 420 // 360
             
-            //print("hero y: \(hero.hero.position.y)")
-            
-            if hero.hero.position.y > nextGoalHeight {
-                score += 1
-                nextGoalHeight += 240
-                if nextGoalHeight > self.frame.height * 2 { // passed level A
-                    nextGoalHeight = 0
-                }
-            }
-            scoreLabel.text = String(score)
-            
-            if hero.hero.position.y > self.size.height * 2 {
+            if hero.hero.position.y > yBoundary {
                 if startingPlatform != nil {
                     startingPlatform.removeFromParent()
                 }
-                hero.hero.position.y = -self.size.height / 2
+                hero.hero.position.y = -yBoundary
+                // randomize levels A B C here
+                
+            }
+            if hero.hero.position.y < -yBoundary {
+                hero.hero.position.y = yBoundary
             }
             
-            if hero.hero.position.y < -self.size.height {
-                hero.hero.position.y = self.size.height * 2
+            if hero.hero.position.y > nextGoalHeight {
+                score += 1
+                nextGoalHeight += 120
+                if nextGoalHeight > yBoundary {
+                    nextGoalHeight = -120
+                }
+                print("hero Y: \(hero.hero.position.y)")
+                print("next goal height: \(nextGoalHeight)")
             }
-            
+            scoreLabel.text = String(score)
             
             if isTouching {
-                //print("xMOD: \(impulseX)")
-                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.25))
+                //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.25))
             }
             //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
             
@@ -160,30 +212,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
             }
             
-            var camPosition = hero.hero.position
+            var camPosition = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y + 200)
             camPosition.x -= hero.hero.size.width
             
             let moveCamToPlayer =  SKAction.moveTo(camPosition, duration: 1.0/60.0)
             cam.runAction(moveCamToPlayer)
             
-            
-            //let speedMultiplier = 50.0
-            //let speedUpDuration = 0.5 // in seconds
-            
-            
             for level in levels {
-                /*
-                // use fillsX?
-                if gameTimeStamp <= speedUpDuration { // less than x seconds since game started
-                    
-                    level.timerDelayValue = level.initialTimerDelayValue / speedMultiplier
-                    //level.speed = level.initialSpeed * CGFloat(speedMultiplier)
-                }
-                else {
-                    level.timerDelayValue = level.initialTimerDelayValue
-                    //level.speed = level.initialSpeed
-                }
-                */
                 if level.timerCounter >= level.timerDelayValue {
                     addObstacle(level)
                     level.timerCounter = 0
@@ -192,19 +227,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     level.timerCounter += fixedDelta
                 }
             }
-            
-            /*
-            for obstacle in obstacles {
-                if gameTimeStamp <= speedUpDuration { // less than x seconds since game started
-                    obstacle.movementSpeed = obstacle.initialMovementSpeed * CGFloat(speedMultiplier)
-                }
-                else {
-                    obstacle.movementSpeed = obstacle.initialMovementSpeed
-                }
-                
-            }
-             */
-            
             
             moveObstacles()
             removeObstaclesOutOfBounds()
@@ -236,10 +258,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
              */
         }
     }
+    
+    func randomizeObstacles(){
+        for level in levels {
+            switch level.levelID {
+            case "A":
+                break
+            case "B":
+                break
+            case "C":
+                break
+            default:
+                break
+            }
+        }
+    }
  
     //MARK: Obstacles
     func addObstacle(level:Level, specifiedPosition:CGPoint? = nil){
-        let xPos = level.direction == .Right ? frameCenter - 300 : frameCenter + 100
+        let xPos = level.direction == .Right ? leftBoundary : rightBoundary
         var position = CGPoint(x:Int(xPos), y:level.yPosition)
         
         if specifiedPosition != nil {
@@ -262,14 +299,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if level.direction == .Right {
             obstacle.movementSpeed = level.speed
+            obstacle.direction = .Right
         }
         else { // Left
             obstacle.movementSpeed = -level.speed
+            obstacle.direction = .Left
         }
         
         obstacle.initialMovementSpeed = obstacle.movementSpeed
         
         obstacle.position = position
+        
+        if level.levelID == "A" {
+            obstacle.fillColor = SKColor.redColor()
+        }
+        if level.levelID == "G" {
+            obstacle.fillColor = SKColor.blueColor()
+        }
         
         addChild(obstacle)
         obstacles.insert(obstacle)
@@ -286,7 +332,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var tempSet:[Obstacle] = []
         for obstacle in obstacles {
             if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 200) ||
-                (obstacle.direction == .Left && obstacle.position.x < -200) {
+                (obstacle.direction == .Left && obstacle.position.x < -600) {
                 tempSet.append(obstacle)
             }
         }
@@ -330,23 +376,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func heroObstacleContact(hero:Hero, obstacle:Obstacle){
-        gameState = .GameOver
-    }
-    
-    func heroEnemyContact(hero:Hero, enemy:Enemy){
-        //print("enemy size: \(enemy.sizeValue)")
-        //print("hero size: \(hero.sizeValue)")
-        //print("hero contacted enemy")
-        
-        if hero.sizeValue > enemy.sizeValue {
-            enemy.runAction(SKAction.removeFromParent())
-            enemies.remove(enemy)
-            hero.sizeValue += 0.05
-            hero.runAction(SKAction.scaleTo(hero.sizeValue, duration: 0.2))
-        }
-        else{
-            gameState = .GameOver
-        }
+        //gameState = .GameOver
     }
     
     //MARK: Touch
@@ -437,7 +467,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: Misc
     func restartGame() {
         // use separate function
-        print("DEAD")
+        //print("DEAD")
         enemies.removeAll()
         // restart game
         let skView = self.view as SKView!
@@ -458,6 +488,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     //MARK: Enemies (unused)
+    
+    // unused
+    func heroEnemyContact(hero:Hero, enemy:Enemy){
+        //print("enemy size: \(enemy.sizeValue)")
+        //print("hero size: \(hero.sizeValue)")
+        //print("hero contacted enemy")
+        
+        if hero.sizeValue > enemy.sizeValue {
+            enemy.runAction(SKAction.removeFromParent())
+            enemies.remove(enemy)
+            hero.sizeValue += 0.05
+            hero.runAction(SKAction.scaleTo(hero.sizeValue, duration: 0.2))
+        }
+        else{
+            gameState = .GameOver
+        }
+    }
     
     func addEnemyGroup(amount:Int, size:CGFloat, position:CGFloat){
         /*
