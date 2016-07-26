@@ -62,7 +62,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         background = childNodeWithName("background") as! SKSpriteNode
         startingPlatform = childNodeWithName("startingPlatform") as! SKSpriteNode
         
-        
         let resourcePath = NSBundle.mainBundle().pathForResource("Hero", ofType: "sks")
         hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         
@@ -98,8 +97,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let tdvB = 1.8, rdB = CGSizeMake(50, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
         let tdvC = 1.6, rdC = CGSizeMake(40, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
         let tdvD = 1.2, rdD = CGSizeMake(20, 20), dD:MovingDirection = .Left, sD:CGFloat = 1.7
-        let tdvE = 1.8, rdE = CGSizeMake(40, 20), dE:MovingDirection = .Right, sE:CGFloat = 1.7
-        let tdvF = 2.9, rdF = CGSizeMake(80, 20), dF:MovingDirection = .Left, sF:CGFloat = 1.9
+        let tdvE = 1.5, rdE = CGSizeMake(40, 20), dE:MovingDirection = .Right, sE:CGFloat = 1.9
+        let tdvF = 1.9, rdF = CGSizeMake(80, 20), dF:MovingDirection = .Left, sF:CGFloat = 2.1
         
         levels.append(Level.init(timerDelayValue: tdvF, yPosition: 720, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F")) // visual only
         levels.append(Level.init(timerDelayValue: tdvE, yPosition: 600, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E")) // visual only
@@ -163,15 +162,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     startingPlatform.removeFromParent()
                 }
                 hero.hero.position.y = -yBoundary
+                
+                let speedIncrease:CGFloat = 0.2
+                for obstacle in obstacles {
+                    if obstacle.direction == .Right {
+                        obstacle.movementSpeed += speedIncrease
+                    }
+                    else { // Left
+                        obstacle.movementSpeed -= speedIncrease
+                    }
+                }
+                for level in levels {
+                    level.speed += speedIncrease
+                    level.timerDelayValue -= CFTimeInterval(speedIncrease / 4)
+                }
             }
             
             if hero.hero.position.y < -yBoundary {
                 hero.hero.position.y = yBoundary * 2
             }
-            
             scoreLabel.text = String(score)
-            
-            print("hero Y: \(hero.hero.position.y)")
             
             if isTouching {
                 hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.25))
@@ -249,22 +259,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if level.levelID == "A" {
-            obstacle.fillColor = SKColor.greenColor()
-        }
-        if level.levelID == "B" {
-            obstacle.fillColor = SKColor.yellowColor()
-        }
-        if level.levelID == "C" {
-            obstacle.fillColor = SKColor.orangeColor()
-        }
-        if level.levelID == "D" {
             obstacle.fillColor = SKColor.redColor()
         }
+        if level.levelID == "B" {
+            obstacle.fillColor = SKColor.orangeColor()
+        }
+        if level.levelID == "C" {
+            obstacle.fillColor = SKColor.yellowColor()
+        }
+        if level.levelID == "D" {
+            obstacle.fillColor = SKColor.greenColor()
+        }
         if level.levelID == "E" {
-            obstacle.fillColor = SKColor.purpleColor()
+            obstacle.fillColor = SKColor.blueColor()
         }
         if level.levelID == "F" {
-            obstacle.fillColor = SKColor.blueColor()
+            obstacle.fillColor = SKColor.purpleColor()
         }
         
         obstacle.initialMovementSpeed = obstacle.movementSpeed
