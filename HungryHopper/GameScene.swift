@@ -69,7 +69,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightBoundary = frameCenter + 100
         leftBoundary = frameCenter - 300
         
-        hero.hero.position = CGPoint(x: frameCenter, y: 100) //  + hero.hero.size.width
+        hero.hero.position = CGPoint(x: frameCenter, y: 150) //  + hero.hero.size.width
         addChild(hero)
         
         physicsWorld.contactDelegate = self
@@ -340,7 +340,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func heroObstacleContact(hero:Hero, obstacle:Obstacle){
-        //gameState = .GameOver
+        gameState = .GameOver
     }
     
     func heroEnemyContact(hero:Hero, enemy:Enemy){
@@ -362,46 +362,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: Touch
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         isTouching = true
-        
-        /*
-         impulseX = CGRectGetMidX(self.frame)
-         
-         for touch in touches {
-         if touch == touches.first {
-         //let position = touch.locationInNode(self)
-         let position = touch.locationInView(self.view)
-         impulseX = position.x
-         //print("raw x: \(impulseX)")
-         }
-         }
-         
-         impulseX = impulseX / self.frame.width
-         impulseX *= 2
-         impulseX -= 1.2
-         impulseX /= 15
-         */
-        
-        /*
-         let touch = touches.first
-         let position = touch!.locationInView(self.view)
-         let touchX = position.x
-         //print("raw x: \(touchX)")
-         
-         let middleOfView = (self.view!.frame.width) / 2
-         if touchX > middleOfView {
-         print("touching right side")
-         impulseX = 0.05
-         }
-         else if touchX < middleOfView {
-         print("touching left side")
-         impulseX = -0.05
-         }
-         */
-        
-        //print("xMOD: \(impulseX)")
-        
         //hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
-        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 1))//0.8
+        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 1))//was 0.8
     }
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Update to new touch location */
