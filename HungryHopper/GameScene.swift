@@ -50,6 +50,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0
     var nextGoalHeight:CGFloat = 120
     
+    var leftBoundary:CGFloat = 0
+    var rightBoundary:CGFloat = 0
+    
     //obstacle
     var obstacles = Set<Obstacle>()
     var levels = [Level]()
@@ -92,15 +95,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         levels.append(Level.init(timerDelayValue: 1.1, yPosition: -120, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (bottom)
         levels.append(Level.init(timerDelayValue: 1.0, yPosition: -240, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C (visual only)
         
-        //addObstacle(levels[0], specifiedPosition: hero.hero.position)
-        /*
+
         for level in levels {
             addObstacle(level)
-            if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 500) ||
-                (obstacle.direction == .Left && obstacle.position.x < -500) {
+                var xPos:CGFloat = leftBoundary
+                let spaceBetweenObstacles = CGFloat(level.timerDelayValue*60)
+                
+                if level.direction == .Left {
+                    xPos = rightBoundary
+                }
+                
+                for i in 1...10 {
+                    addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: CGFloat(level.yPosition)))
+                    
+                    if level.direction == .Right {
+                        xPos += spaceBetweenObstacles
+                    }
+                    else {
+                        xPos -= spaceBetweenObstacles
+                    }
+                }
             }
-        }
-         */
     }
     
     //MARK: Update
