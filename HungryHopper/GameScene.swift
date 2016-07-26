@@ -174,7 +174,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 for level in levels {
                     level.speed += speedIncrease
-                    level.timerDelayValue -= CFTimeInterval(speedIncrease / 4)
+                    level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 4)
                 }
             }
             
@@ -184,7 +184,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = String(score)
             
             if isTouching {
-                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.25))
+                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.28))
             }
             //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
             
@@ -340,7 +340,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func heroObstacleContact(hero:Hero, obstacle:Obstacle){
-        gameState = .GameOver
+        //gameState = .GameOver
     }
     
     func heroEnemyContact(hero:Hero, enemy:Enemy){
@@ -401,7 +401,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //print("xMOD: \(impulseX)")
         
         //hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
-        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 0.9))//0.8
+        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 1))//0.8
     }
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Update to new touch location */
