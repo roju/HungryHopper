@@ -19,9 +19,8 @@ class Level {
     var initialSpeed:CGFloat
     var initialTimerDelayValue:CFTimeInterval
     var fillsX:Bool
-    var levelID:String
     
-    init (timerDelayValue:CFTimeInterval, yPosition:Int, rectDimensions:CGSize, direction:MovingDirection, speed:CGFloat, levelID:String) {
+    init (timerDelayValue:CFTimeInterval, yPosition:Int, rectDimensions:CGSize, direction:MovingDirection, speed:CGFloat) {
         self.timerCounter = 0.0
         self.timerDelayValue = timerDelayValue
         self.initialTimerDelayValue = timerDelayValue
@@ -30,7 +29,6 @@ class Level {
         self.direction = direction
         self.speed = speed
         self.initialSpeed = speed
-        self.fillsX = false
-        self.levelID = levelID
+        fillsX = false
     }
 }
