@@ -66,8 +66,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         
         frameCenter = self.frame.width / 2
-        rightBoundary = frameCenter + 100
-        leftBoundary = frameCenter - 300
         
         hero.hero.position = CGPoint(x: frameCenter, y: 100) //  + hero.hero.size.width
         addChild(hero)
@@ -256,7 +254,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  
     //MARK: Obstacles
     func addObstacle(level:Level, specifiedPosition:CGPoint? = nil){
-        let xPos = level.direction == .Right ? leftBoundary : rightBoundary
+        let xPos = level.direction == .Right ? frameCenter - 300 : frameCenter + 100
         var position = CGPoint(x:Int(xPos), y:level.yPosition)
         
         if specifiedPosition != nil {
