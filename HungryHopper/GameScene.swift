@@ -50,6 +50,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var score = 0
     var nextGoalHeight:CGFloat = 240
     
+    var leftBoundary:CGFloat = 0
+    var rightBoundary:CGFloat = 0
+    
     //obstacle
     var obstacles = Set<Obstacle>()
     var levels = [Level]()
@@ -63,6 +66,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         
         frameCenter = self.frame.width / 2
+        rightBoundary = frameCenter + 100
+        leftBoundary = frameCenter - 300
         
         hero.hero.position = CGPoint(x: frameCenter, y: 100) //  + hero.hero.size.width
         addChild(hero)
@@ -101,15 +106,27 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         levels.append(Level.init(timerDelayValue: 1.1, yPosition: -120, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (bottom)
         levels.append(Level.init(timerDelayValue: 1.0, yPosition: -240, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C (visual only)
         
-        //addObstacle(levels[0], specifiedPosition: hero.hero.position)
-        /*
+
         for level in levels {
             addObstacle(level)
-            if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 500) ||
-                (obstacle.direction == .Left && obstacle.position.x < -500) {
+                var xPos:CGFloat = leftBoundary
+                let spaceBetweenObstacles = CGFloat(level.timerDelayValue*60)
+                
+                if level.direction == .Left {
+                    xPos = rightBoundary
+                }
+                
+                for i in 1...10 {
+                    addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: CGFloat(level.yPosition)))
+                    
+                    if level.direction == .Right {
+                        xPos += spaceBetweenObstacles
+                    }
+                    else {
+                        xPos -= spaceBetweenObstacles
+                    }
+                }
             }
-        }
-         */
     }
     
     //MARK: Update
@@ -239,7 +256,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  
     //MARK: Obstacles
     func addObstacle(level:Level, specifiedPosition:CGPoint? = nil){
-        let xPos = level.direction == .Right ? frameCenter - 300 : frameCenter + 100
+        let xPos = level.direction == .Right ? leftBoundary : rightBoundary
         var position = CGPoint(x:Int(xPos), y:level.yPosition)
         
         if specifiedPosition != nil {
