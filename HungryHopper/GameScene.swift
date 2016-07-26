@@ -37,7 +37,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var background:SKSpriteNode!
     var startingPlatform:SKSpriteNode!
-    var scoreLabel:SKLabelNode!
+    //var scoreLabel:SKLabelNode!
     
     var impulseX:CGFloat = 0.0
     var impulseXContinuous:CGFloat = 0.05
@@ -48,7 +48,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var frameCenter:CGFloat = 0
     
     var score = 0
-    var nextGoalHeight:CGFloat = 240
+    var nextGoalHeight:CGFloat = 120
     
     //obstacle
     var obstacles = Set<Obstacle>()
@@ -58,13 +58,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         background = childNodeWithName("background") as! SKSpriteNode
         startingPlatform = childNodeWithName("startingPlatform") as! SKSpriteNode
+        //scoreLabel = hero.childNodeWithName("//scoreLabel") as! SKLabelNode
         
         let resourcePath = NSBundle.mainBundle().pathForResource("Hero", ofType: "sks")
         hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         
         frameCenter = self.frame.width / 2
         
-        hero.hero.position = CGPoint(x: frameCenter, y: 100) //  + hero.hero.size.width
+        hero.hero.position = CGPoint(x: frameCenter, y: 200) //  + hero.hero.size.width
         addChild(hero)
         
         physicsWorld.contactDelegate = self
@@ -78,16 +79,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //position the camera on the gamescene.
         cam.position = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y)
-        
-        
-        scoreLabel = SKLabelNode.init(text: "0")
-        scoreLabel.position = CGPoint(x: 16, y: 200)
-        scoreLabel.fontColor = UIColor.blackColor()
-        cam.addChild(scoreLabel)
-        
-        //scoreLabel.position.x = cam.position.x
-        //scoreLabel.position.y = cam.position.y + 100
-        
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
         
@@ -124,16 +115,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Called before each frame is rendered */
             gameTimeStamp += fixedDelta
             
-            //print("hero y: \(hero.hero.position.y)")
-            
             if hero.hero.position.y > nextGoalHeight {
                 score += 1
-                nextGoalHeight += 240
-                if nextGoalHeight > self.frame.height * 2 { // passed level A
+                nextGoalHeight += 120
+                if nextGoalHeight > self.frame.height { // passed level A
                     nextGoalHeight = 0
                 }
             }
-            scoreLabel.text = String(score)
+            
+            //scoreLabel.text = String(score)
             
             if hero.hero.position.y > self.size.height * 2 {
                 if startingPlatform != nil {
