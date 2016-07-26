@@ -37,7 +37,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var background:SKSpriteNode!
     var startingPlatform:SKSpriteNode!
-    //var scoreLabel:SKLabelNode!
+    var scoreLabel:SKLabelNode!
     
     var impulseX:CGFloat = 0.0
     var impulseXContinuous:CGFloat = 0.05
@@ -48,7 +48,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var frameCenter:CGFloat = 0
     
     var score = 0
-    var nextGoalHeight:CGFloat = 120
+    var nextGoalHeight:CGFloat = 240
     
     var leftBoundary:CGFloat = 0
     var rightBoundary:CGFloat = 0
@@ -61,14 +61,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func didMoveToView(view: SKView) {
         background = childNodeWithName("background") as! SKSpriteNode
         startingPlatform = childNodeWithName("startingPlatform") as! SKSpriteNode
-        //scoreLabel = hero.childNodeWithName("//scoreLabel") as! SKLabelNode
+        
         
         let resourcePath = NSBundle.mainBundle().pathForResource("Hero", ofType: "sks")
         hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         
         frameCenter = self.frame.width / 2
+        rightBoundary = frameCenter + 100
+        leftBoundary = frameCenter - 300
         
-        hero.hero.position = CGPoint(x: frameCenter, y: 200) //  + hero.hero.size.width
+        hero.hero.position = CGPoint(x: frameCenter, y: 100) //  + hero.hero.size.width
         addChild(hero)
         
         physicsWorld.contactDelegate = self
@@ -83,17 +85,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //position the camera on the gamescene.
         cam.position = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y)
         
-        self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
+        // add the score label as a child of camera
+        scoreLabel = SKLabelNode.init(text: "0")
+        scoreLabel.position = CGPoint(x: 16, y: 200)
+        scoreLabel.fontColor = UIColor.whiteColor()
+        cam.addChild(scoreLabel)
         
-        levels.append(Level.init(timerDelayValue: 1.8, yPosition: 600, rectDimensions: CGSizeMake(70, 20), direction: .Right, speed: 1.8)) // B (visual only)
-        levels.append(Level.init(timerDelayValue: 1.1, yPosition: 480, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (top)
-        levels.append(Level.init(timerDelayValue: 1.0, yPosition: 360, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C
-        levels.append(Level.init(timerDelayValue: 2.1, yPosition: 240, rectDimensions: CGSizeMake(80, 20), direction: .Left, speed: 1.7))
-        levels.append(Level.init(timerDelayValue: 2.0, yPosition: 120, rectDimensions: CGSizeMake(80, 20), direction: .Right, speed: 2.1))
+        self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);// gravityInWater
+        
+        
+        let tdvA = 2.0, rdA = CGSizeMake(30, 20), dA:MovingDirection = .Right, sA:CGFloat = 1.6
+        let tdvB = 1.8, rdB = CGSizeMake(50, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
+        let tdvC = 1.6, rdC = CGSizeMake(40, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
+        let tdvD = 1.2, rdD = CGSizeMake(20, 20), dD:MovingDirection = .Left, sD:CGFloat = 1.7
+        let tdvE = 1.8, rdE = CGSizeMake(40, 20), dE:MovingDirection = .Right, sE:CGFloat = 1.7
+        let tdvF = 2.9, rdF = CGSizeMake(80, 20), dF:MovingDirection = .Left, sF:CGFloat = 1.9
+        
+        levels.append(Level.init(timerDelayValue: tdvF, yPosition: 720, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F")) // visual only
+        levels.append(Level.init(timerDelayValue: tdvE, yPosition: 600, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E")) // visual only
+        levels.append(Level.init(timerDelayValue: tdvD, yPosition: 480, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D")) // top
+        levels.append(Level.init(timerDelayValue: tdvC, yPosition: 360, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C"))
+        levels.append(Level.init(timerDelayValue: tdvB, yPosition: 240, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B"))
+        levels.append(Level.init(timerDelayValue: tdvA, yPosition: 120, rectDimensions: rdA, direction: dA, speed: sA, levelID:"A"))
         // hero starting position
-        levels.append(Level.init(timerDelayValue: 1.8, yPosition: 0, rectDimensions: CGSizeMake(70, 20), direction: .Right, speed: 1.8)) // B
-        levels.append(Level.init(timerDelayValue: 1.1, yPosition: -120, rectDimensions: CGSizeMake(40, 20), direction: .Left, speed: 1.8)) // A (bottom)
-        levels.append(Level.init(timerDelayValue: 1.0, yPosition: -240, rectDimensions: CGSizeMake(40, 20), direction: .Right, speed: 3.5)) // C (visual only)
+        levels.append(Level.init(timerDelayValue: tdvF, yPosition:    0, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F"))
+        levels.append(Level.init(timerDelayValue: tdvE, yPosition: -120, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E"))
+        levels.append(Level.init(timerDelayValue: tdvD, yPosition: -240, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D")) // bottom
+        levels.append(Level.init(timerDelayValue: tdvC, yPosition: -360, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C")) // visual only
+        levels.append(Level.init(timerDelayValue: tdvB, yPosition: -480, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B")) // visual only
         
 
         for level in levels {
@@ -130,30 +149,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             /* Called before each frame is rendered */
             gameTimeStamp += fixedDelta
             
+            let yBoundary:CGFloat = 480
+            
             if hero.hero.position.y > nextGoalHeight {
                 score += 1
-                nextGoalHeight += 120
-                if nextGoalHeight > self.frame.height { // passed level A
-                    nextGoalHeight = 0
+                nextGoalHeight += 240
+                if nextGoalHeight > yBoundary * 2 { // passed level A
+                    nextGoalHeight = -yBoundary / 2
                 }
             }
-            
-            //scoreLabel.text = String(score)
-            
-            if hero.hero.position.y > self.size.height * 2 {
+            if hero.hero.position.y > yBoundary * 2 {
                 if startingPlatform != nil {
                     startingPlatform.removeFromParent()
                 }
-                hero.hero.position.y = -self.size.height / 2
+                hero.hero.position.y = -yBoundary
             }
             
-            if hero.hero.position.y < -self.size.height {
-                hero.hero.position.y = self.size.height * 2
+            if hero.hero.position.y < -yBoundary {
+                hero.hero.position.y = yBoundary * 2
             }
             
+            scoreLabel.text = String(score)
+            
+            print("hero Y: \(hero.hero.position.y)")
             
             if isTouching {
-                //print("xMOD: \(impulseX)")
                 hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.25))
             }
             //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
@@ -165,30 +185,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
             }
             
-            var camPosition = hero.hero.position
+            var camPosition = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y + 200)
             camPosition.x -= hero.hero.size.width
             
             let moveCamToPlayer =  SKAction.moveTo(camPosition, duration: 1.0/60.0)
             cam.runAction(moveCamToPlayer)
             
-            
-            //let speedMultiplier = 50.0
-            //let speedUpDuration = 0.5 // in seconds
-            
-            
             for level in levels {
-                /*
-                // use fillsX?
-                if gameTimeStamp <= speedUpDuration { // less than x seconds since game started
-                    
-                    level.timerDelayValue = level.initialTimerDelayValue / speedMultiplier
-                    //level.speed = level.initialSpeed * CGFloat(speedMultiplier)
-                }
-                else {
-                    level.timerDelayValue = level.initialTimerDelayValue
-                    //level.speed = level.initialSpeed
-                }
-                */
                 if level.timerCounter >= level.timerDelayValue {
                     addObstacle(level)
                     level.timerCounter = 0
@@ -198,37 +201,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
-            /*
-            for obstacle in obstacles {
-                if gameTimeStamp <= speedUpDuration { // less than x seconds since game started
-                    obstacle.movementSpeed = obstacle.initialMovementSpeed * CGFloat(speedMultiplier)
-                }
-                else {
-                    obstacle.movementSpeed = obstacle.initialMovementSpeed
-                }
-                
-            }
-             */
-            
-            
             moveObstacles()
             removeObstaclesOutOfBounds()
-            
-            /*
-            enemyTimer += fixedDelta
-            
-            if enemyTimer >= enemyDelaySeconds {
-                //addRandomEnemy()
-                enemyTimer = 0
-            }
- 
- 
-            moveEnemies()
-            removeEnemiesOutOfBounds()
-            
-            moveObstacles()
-            removeObstaclesOutOfBounds()
-            */
             
             // keep hero centered in X
             /*
@@ -244,7 +218,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
  
     //MARK: Obstacles
     func addObstacle(level:Level, specifiedPosition:CGPoint? = nil){
-        let xPos = level.direction == .Right ? frameCenter - 300 : frameCenter + 100
+        let xPos = level.direction == .Right ? leftBoundary : rightBoundary
         var position = CGPoint(x:Int(xPos), y:level.yPosition)
         
         if specifiedPosition != nil {
@@ -267,9 +241,30 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         if level.direction == .Right {
             obstacle.movementSpeed = level.speed
+            obstacle.direction = .Right
         }
         else { // Left
             obstacle.movementSpeed = -level.speed
+            obstacle.direction = .Left
+        }
+        
+        if level.levelID == "A" {
+            obstacle.fillColor = SKColor.greenColor()
+        }
+        if level.levelID == "B" {
+            obstacle.fillColor = SKColor.yellowColor()
+        }
+        if level.levelID == "C" {
+            obstacle.fillColor = SKColor.orangeColor()
+        }
+        if level.levelID == "D" {
+            obstacle.fillColor = SKColor.redColor()
+        }
+        if level.levelID == "E" {
+            obstacle.fillColor = SKColor.purpleColor()
+        }
+        if level.levelID == "F" {
+            obstacle.fillColor = SKColor.blueColor()
         }
         
         obstacle.initialMovementSpeed = obstacle.movementSpeed
@@ -291,7 +286,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var tempSet:[Obstacle] = []
         for obstacle in obstacles {
             if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 200) ||
-                (obstacle.direction == .Left && obstacle.position.x < -200) {
+                (obstacle.direction == .Left && obstacle.position.x < -600) {
                 tempSet.append(obstacle)
             }
         }
