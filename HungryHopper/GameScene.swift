@@ -76,23 +76,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         /* Camera */
         cam = SKCameraNode() //initialize and assign an instance of SKCameraNode to the cam variable.
-        cam.scaleAsPoint = CGPoint(x: 1.5, y: 1.5) //the scale sets the zoom level of the camera on the given position
         
         self.camera = cam //set the scene's camera to reference cam
         self.addChild(cam) //make the cam a childElement of the scene itself.
         
         //position the camera on the gamescene.
         cam.position = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y)
+        cam.scaleAsPoint = CGPoint(x: 1.5, y: 1.5) //the scale sets the zoom level of the camera on the given position
         
         // add the score label as a child of camera
         scoreLabel = SKLabelNode.init(text: "0")
-        scoreLabel.position = CGPoint(x: 16, y: 200)
+        scoreLabel.fontName = "AvenirNext-Bold"
+        scoreLabel.position = CGPoint(x: hero.hero.size.width, y: 200)
         scoreLabel.fontColor = UIColor.whiteColor()
+        
         cam.addChild(scoreLabel)
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);// gravityInWater
         
-        
+        //let tdvA = 3.5, rdA = CGSizeMake(70, 20), dA:MovingDirection = .Right, sA:CGFloat = 0.5
         let tdvA = 2.0, rdA = CGSizeMake(30, 20), dA:MovingDirection = .Right, sA:CGFloat = 1.6
         let tdvB = 1.8, rdB = CGSizeMake(50, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
         let tdvC = 1.6, rdC = CGSizeMake(40, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
@@ -117,7 +119,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for level in levels {
             addObstacle(level)
                 var xPos:CGFloat = leftBoundary
-                let spaceBetweenObstacles = CGFloat(level.timerDelayValue*60)
+                let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
                 
                 if level.direction == .Left {
                     xPos = rightBoundary
@@ -153,16 +155,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             if hero.hero.position.y > nextGoalHeight {
                 score += 1
                 nextGoalHeight += 240
-                if nextGoalHeight > yBoundary * 2 { // passed level A
+                if nextGoalHeight > yBoundary * 2 {
                     nextGoalHeight = -yBoundary / 2
                 }
             }
-            if hero.hero.position.y > yBoundary * 2 {
+            if hero.hero.position.y > yBoundary * 2 { // passed above level D
                 if startingPlatform != nil {
                     startingPlatform.removeFromParent()
                 }
                 hero.hero.position.y = -yBoundary
+                // Hero reached the top and looped around to bottom of scene
+                //-------------------------------------------------------------------
                 
+                // increase speed of obstacles every time hero passes level
                 let speedIncrease:CGFloat = 0.2
                 for obstacle in obstacles {
                     if obstacle.direction == .Right {
@@ -174,10 +179,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 for level in levels {
                     level.speed += speedIncrease
-                    level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 4)
+                    level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 8)
                 }
+                
+                // randomize 
+                
+                
+                //-------------------------------------------------------------------
             }
             
+            // loop around if moving down past boundary
             if hero.hero.position.y < -yBoundary {
                 hero.hero.position.y = yBoundary * 2
             }
@@ -246,7 +257,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         obstacle.physicsBody?.dynamic = true
         obstacle.physicsBody?.affectedByGravity = false
         obstacle.physicsBody?.categoryBitMask = 8
-        obstacle.physicsBody?.collisionBitMask = 0//4294967295 // 0
+        obstacle.physicsBody?.collisionBitMask = 0 //4294967295 // 0
         obstacle.physicsBody?.contactTestBitMask = 1
         
         if level.direction == .Right {
@@ -283,6 +294,40 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         addChild(obstacle)
         obstacles.insert(obstacle)
+    }
+    
+    func levelToRandomize(id:String) -> Level? {
+        var returnID:String = ""
+        
+        switch id {
+        case "A":
+            returnID = "D"
+            break
+        case "B":
+            returnID = "E"
+            break
+        case "C":
+            returnID = "F"
+            break
+        case "D":
+            returnID = "A"
+            break
+        case "E":
+            returnID = "B"
+            break
+        case "F":
+            returnID = "C"
+            break
+        default:
+            break
+        }
+        
+        for level in levels {
+            if level.levelID == returnID {
+                return level
+            }
+        }
+        return nil
     }
     
     func moveObstacles(){
