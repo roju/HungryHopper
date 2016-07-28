@@ -176,24 +176,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 hero.hero.position.y = -yBoundary
                 // Hero reached the top and looped around to bottom of scene
-                //-------------------------------------------------------------------
-                
-                // increase speed of obstacles every time hero passes level
-                let speedIncrease:CGFloat = 0.2
-                for obstacle in obstacles {
-                    if obstacle.direction == .Right {
-                        obstacle.movementSpeed += speedIncrease
-                    }
-                    else { // Left
-                        obstacle.movementSpeed -= speedIncrease
-                    }
-                }
-                for level in levels {
-                    level.speed += speedIncrease
-                    level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 8)
-                }
-                
-                //-------------------------------------------------------------------
+                //increaseGameSpeed()// increase speed of obstacles every time hero passes level
             }
             
             // loop around if moving down past boundary
@@ -246,6 +229,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
              hero.hero.position.x = screenWidth / 2
              }
              */
+        }
+    }
+    
+    func increaseGameSpeed() {
+        let speedIncrease:CGFloat = 0.2
+        for obstacle in obstacles {
+            if obstacle.direction == .Right {
+                obstacle.movementSpeed += speedIncrease
+            }
+            else { // Left
+                obstacle.movementSpeed -= speedIncrease
+            }
+        }
+        for level in levels {
+            level.speed += speedIncrease
+            level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 8)
         }
     }
  
@@ -341,18 +340,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 level.timerCounter = 0
             }
         }
-        //let tdv = 2.0
-        let rd = CGSizeMake(randomBetweenNumbers(10, secondNum: 50), randomBetweenNumbers(10, secondNum: 50))
-        //let dA:MovingDirection = .Right
-        //let sA:CGFloat = 1.6
-        
         for obstacle in obstacles {
             if obstacle.levelID == randomizedID {
                 obstacle.flaggedForRemoval = true
             }
         }
+        
+        let timerDelayValue = CFTimeInterval(randomBetweenNumbers(1, secondNum: 2.5))
+        let rectDimensions = CGSizeMake(randomBetweenNumbers(10, secondNum: 50), randomBetweenNumbers(10, secondNum: 50))
+        let direction:MovingDirection = randomBool() ? .Left: .Right
+        let speed:CGFloat = randomBetweenNumbers(1, secondNum: 3)
+        
         for level in levelsToRandomize {
-            level.rectDimensions = rd
+            level.rectDimensions = rectDimensions
+            level.timerDelayValue = timerDelayValue
+            level.direction = direction
             populateObstaclesForLevel(level)
         }
     }

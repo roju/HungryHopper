@@ -33,12 +33,6 @@ class Obstacle:SKShapeNode {
         let diameter = circleOfRadius * 2
         self.path = CGPathCreateWithEllipseInRect(CGRect(origin: CGPointZero, size: CGSize(width: diameter, height: diameter)), nil)
     }
-    /*
-    func modifyRect(width:CGFloat, height:CGFloat) {
-        self.runAction(SKAction.scaleXTo(width, duration: 0))
-        self.runAction(SKAction.scaleYTo(height, duration: 0))
-    }
-    */
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
