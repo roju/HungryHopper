@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		913A9FC71D4964A1009CA619 /* star.png in Resources */ = {isa = PBXBuildFile; fileRef = 913A9FC61D4964A1009CA619 /* star.png */; };
 		9153D10C1D3D844900E98242 /* redfish.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10B1D3D844900E98242 /* redfish.png */; };
 		9153D10E1D3D9C3E00E98242 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10D1D3D9C3E00E98242 /* 1.png */; };
 		9153D1251D3EED3800E98242 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10F1D3EED3800E98242 /* 2.png */; };
@@ -64,6 +65,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		913A9FC61D4964A1009CA619 /* star.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star.png; sourceTree = "<group>"; };
 		9153D10B1D3D844900E98242 /* redfish.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redfish.png; path = HungryHopper/Assets.xcassets/RedFish.imageset/redfish.png; sourceTree = "<group>"; };
 		9153D10D1D3D9C3E00E98242 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		9153D10F1D3EED3800E98242 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 		91D08B771D36C01E0092D664 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				913A9FC61D4964A1009CA619 /* star.png */,
 				9153D10D1D3D9C3E00E98242 /* 1.png */,
 				9153D10F1D3EED3800E98242 /* 2.png */,
 				9153D1101D3EED3800E98242 /* 3.png */,
@@ -306,6 +309,7 @@
 				91BDF6B71D342510009CE6FF /* flyingpenguin@2x.png in Resources */,
 				9153D1331D3EED3800E98242 /* 16.png in Resources */,
 				9153D1321D3EED3800E98242 /* 15.png in Resources */,
+				913A9FC71D4964A1009CA619 /* star.png in Resources */,
 				91BDF6A61D306DF5009CE6FF /* Main.storyboard in Resources */,
 				9153D1381D3EED3800E98242 /* 21.png in Resources */,
 				9153D1281D3EED3800E98242 /* 5.png in Resources */,

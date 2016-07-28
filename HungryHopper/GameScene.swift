@@ -9,6 +9,7 @@
 /*
  TODO:
  check hero linear damping: sometimes it gets reset to default
+ make obstacles move diagonally
  */
 
 import SpriteKit
@@ -53,6 +54,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var leftBoundary:CGFloat = 0
     var rightBoundary:CGFloat = 0
     
+    let zoomLevel = 1.5
+    
     //obstacle
     var obstacles = Set<Obstacle>()
     var levels = [Level]()
@@ -82,7 +85,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         //position the camera on the gamescene.
         cam.position = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y)
-        cam.scaleAsPoint = CGPoint(x: 1.5, y: 1.5) //the scale sets the zoom level of the camera on the given position
+        cam.scaleAsPoint = CGPoint(x: zoomLevel, y: zoomLevel) //the scale sets the zoom level of the camera on the given position
         
         // add the score label as a child of camera
         scoreLabel = SKLabelNode.init(text: "0")
@@ -115,27 +118,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         levels.append(Level.init(timerDelayValue: tdvC, yPosition: -360, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C")) // visual only
         levels.append(Level.init(timerDelayValue: tdvB, yPosition: -480, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B")) // visual only
         
-
+        // initially populate the obstacles for all levels so we don't have to wait for them to move onscreen before we see them
         for level in levels {
-            addObstacle(level)
-                var xPos:CGFloat = leftBoundary
-                let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
-                
-                if level.direction == .Left {
-                    xPos = rightBoundary
-                }
-                
-                for i in 1...10 {
-                    addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: CGFloat(level.yPosition)))
-                    
-                    if level.direction == .Right {
-                        xPos += spaceBetweenObstacles
-                    }
-                    else {
-                        xPos -= spaceBetweenObstacles
-                    }
-                }
+            populateObstaclesForLevel(level)
+        }
+    }
+    
+    func populateObstaclesForLevel(level:Level) {
+        addObstacle(level)
+        var xPos:CGFloat = leftBoundary
+        let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
+        
+        if level.direction == .Left {
+            xPos = rightBoundary
+        }
+        
+        for i in 1...10 {
+            addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: CGFloat(level.yPosition)))
+            
+            if level.direction == .Right {
+                xPos += spaceBetweenObstacles
             }
+            else {
+                xPos -= spaceBetweenObstacles
+            }
+        }
     }
     
     //MARK: Update
@@ -152,12 +159,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let yBoundary:CGFloat = 480
             
-            if hero.hero.position.y > nextGoalHeight {
+            if hero.hero.position.y > nextGoalHeight { // passed through a level
                 score += 1
                 nextGoalHeight += 240
                 if nextGoalHeight > yBoundary * 2 {
                     nextGoalHeight = -yBoundary / 2
                 }
+                //print("nextGoalHeight: \(nextGoalHeight)")
+                
+                // randomize
+                randomizeLevels(nextGoalHeight)
             }
             if hero.hero.position.y > yBoundary * 2 { // passed above level D
                 if startingPlatform != nil {
@@ -181,9 +192,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     level.speed += speedIncrease
                     level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 8)
                 }
-                
-                // randomize 
-                
                 
                 //-------------------------------------------------------------------
             }
@@ -223,7 +231,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             moveObstacles()
-            removeObstaclesOutOfBounds()
+            
+            flagObstaclesOutOfBounds()
+            removeFlaggedObstacles()
+            
+            //enemyTimer += fixedDelta
             
             // keep hero centered in X
             /*
@@ -250,6 +262,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let obstacle = Obstacle.init(rect:CGRect(origin:position, size:level.rectDimensions))
         obstacle.name = "obs"
+        obstacle.levelID = level.levelID
         
         let rectCenter = CGPointMake(position.x + level.rectDimensions.width / 2, position.y + level.rectDimensions.height / 2)
         
@@ -289,45 +302,59 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         obstacle.initialMovementSpeed = obstacle.movementSpeed
-        
         obstacle.position = position
         
         addChild(obstacle)
         obstacles.insert(obstacle)
     }
     
-    func levelToRandomize(id:String) -> Level? {
-        var returnID:String = ""
+    func randomizeLevels(yPos:CGFloat) {
+        var randomizedID:String = ""
         
-        switch id {
-        case "A":
-            returnID = "D"
+        switch yPos {
+        case 0:  //E
+            randomizedID = "B"
             break
-        case "B":
-            returnID = "E"
+        case 240://F
+            randomizedID = "C"
             break
-        case "C":
-            returnID = "F"
+        case 480://A
+            randomizedID = "D"
             break
-        case "D":
-            returnID = "A"
+        case 720://B
+            randomizedID = "E"
             break
-        case "E":
-            returnID = "B"
+        case 960://C
+            randomizedID = "F"
             break
-        case "F":
-            returnID = "C"
+        case -240://D
+            randomizedID = "A"
             break
         default:
             break
         }
         
+        var levelsToRandomize = [Level]()
         for level in levels {
-            if level.levelID == returnID {
-                return level
+            if level.levelID == randomizedID {
+                levelsToRandomize.append(level)
+                level.timerCounter = 0
             }
         }
-        return nil
+        //let tdv = 2.0
+        let rd = CGSizeMake(randomBetweenNumbers(10, secondNum: 50), randomBetweenNumbers(10, secondNum: 50))
+        //let dA:MovingDirection = .Right
+        //let sA:CGFloat = 1.6
+        
+        for obstacle in obstacles {
+            if obstacle.levelID == randomizedID {
+                obstacle.flaggedForRemoval = true
+            }
+        }
+        for level in levelsToRandomize {
+            level.rectDimensions = rd
+            populateObstaclesForLevel(level)
+        }
     }
     
     func moveObstacles(){
@@ -337,21 +364,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    func removeObstaclesOutOfBounds(){
-        var tempSet:[Obstacle] = []
+    func flagObstaclesOutOfBounds(){
         for obstacle in obstacles {
             if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 200) ||
                 (obstacle.direction == .Left && obstacle.position.x < -600) {
-                tempSet.append(obstacle)
+                obstacle.flaggedForRemoval = true
             }
         }
-        enemyTimer += fixedDelta
-        
-        for obstacle in tempSet {
-            obstacles.remove(obstacle)
-            obstacle.removeFromParent()
+    }
+    
+    func removeFlaggedObstacles() {
+        for obstacle in obstacles {
+            if obstacle.flaggedForRemoval {
+                obstacles.remove(obstacle)
+                obstacle.removeFromParent()
+            }
         }
-        tempSet.removeAll()
     }
     
     //MARK: Physics
@@ -454,7 +482,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: Misc
     func restartGame() {
         // use separate function
-        print("DEAD")
+        //print("DEAD")
         enemies.removeAll()
         // restart game
         let skView = self.view as SKView!
