@@ -16,6 +16,7 @@ class Level {
     var rectDimensions:CGSize
     var direction:MovingDirection
     var speed:CGFloat
+    var verticalSpeed:CGFloat = 0
     var initialSpeed:CGFloat
     var initialTimerDelayValue:CFTimeInterval
     var fillsX:Bool

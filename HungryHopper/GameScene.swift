@@ -10,6 +10,9 @@
  TODO:
  check hero linear damping: sometimes it gets reset to default
  make obstacles move diagonally
+ calculate gap sizes to avoid impossible levels
+ add stars to collect at each level
+ rotate obstacles moving diagonally
  */
 
 import SpriteKit
@@ -60,6 +63,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var obstacles = Set<Obstacle>()
     var levels = [Level]()
     
+    //------------------------------------------------------
     
     override func didMoveToView(view: SKView) {
         background = childNodeWithName("background") as! SKSpriteNode
@@ -72,7 +76,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightBoundary = frameCenter + 100
         leftBoundary = frameCenter - 300
         
-        hero.hero.position = CGPoint(x: frameCenter, y: 150) //  + hero.hero.size.width
+        hero.hero.position = CGPoint(x: frameCenter, y: 200) //  + hero.hero.size.width
         addChild(hero)
         
         physicsWorld.contactDelegate = self
@@ -97,7 +101,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);// gravityInWater
         
-        //let tdvA = 3.5, rdA = CGSizeMake(70, 20), dA:MovingDirection = .Right, sA:CGFloat = 0.5
         let tdvA = 2.0, rdA = CGSizeMake(30, 20), dA:MovingDirection = .Right, sA:CGFloat = 1.6
         let tdvB = 1.8, rdB = CGSizeMake(50, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
         let tdvC = 1.6, rdC = CGSizeMake(40, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
@@ -127,25 +130,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func populateObstaclesForLevel(level:Level) {
         addObstacle(level)
         var xPos:CGFloat = leftBoundary
+        var yPos = CGFloat(level.yPosition)
+        
         let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
+        let verticalSpacing = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed/2))
         
         if level.direction == .Left {
             xPos = rightBoundary
         }
         
-        for i in 1...10 {
-            addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: CGFloat(level.yPosition)))
+        //for _ in 1...10 {
+        while true {
+            addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: yPos))
             
             if level.direction == .Right {
+                if xPos > self.frame.width {
+                    break
+                }
                 xPos += spaceBetweenObstacles
             }
-            else {
+            else { // direction .Left
+                if xPos < 0 {
+                    break
+                }
                 xPos -= spaceBetweenObstacles
             }
+            
+            yPos += verticalSpacing
         }
     }
     
-    //MARK: Update
+    //MARK: Update ---------------------------------------
     override func update(currentTime: CFTimeInterval) {
         if gameState == .Paused {
             
@@ -153,12 +168,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if gameState == .GameOver {
             restartGame()
         }
+        /* Called before each frame is rendered */
         else if gameState == .Active {
-            /* Called before each frame is rendered */
             gameTimeStamp += fixedDelta
             
-            let yBoundary:CGFloat = 480
+            // apply impulse to hero continuously while holding finger down on screen
+            if isTouching {
+                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.28))
+            }
+            //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
             
+            let yBoundary:CGFloat = 480
             if hero.hero.position.y > nextGoalHeight { // passed through a level
                 score += 1
                 nextGoalHeight += 240
@@ -167,42 +187,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
                 //print("nextGoalHeight: \(nextGoalHeight)")
                 
-                // randomize
+                // randomize levels
                 randomizeLevels(nextGoalHeight)
             }
-            if hero.hero.position.y > yBoundary * 2 { // passed above level D
+            // update the score label
+            scoreLabel.text = String(score)
+            
+            // passed above level D: Hero reached the top and looped around to bottom of scene
+            if hero.hero.position.y > yBoundary * 2 {
                 if startingPlatform != nil {
                     startingPlatform.removeFromParent()
                 }
                 hero.hero.position.y = -yBoundary
-                // Hero reached the top and looped around to bottom of scene
-                //increaseGameSpeed()// increase speed of obstacles every time hero passes level
+                // increase speed of obstacles every time hero passes level
+                //increaseGameSpeed()
             }
             
-            // loop around if moving down past boundary
+            // loop around to the top of the scene if moving down past lower boundary
             if hero.hero.position.y < -yBoundary {
                 hero.hero.position.y = yBoundary * 2
             }
-            scoreLabel.text = String(score)
             
-            if isTouching {
-                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.28))
-            }
-            //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
-            
-            if hero.hero.position.y > background.frame.height {
-                self.physicsWorld.gravity = CGVectorMake(0.0, gravityOutOfWater);
-            }
-            else{
-                self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
-            }
-            
+            // move camera to follow hero
             var camPosition = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y + 200)
             camPosition.x -= hero.hero.size.width
             
             let moveCamToPlayer =  SKAction.moveTo(camPosition, duration: 1.0/60.0)
             cam.runAction(moveCamToPlayer)
             
+            // add new obstacles to all levels
             for level in levels {
                 if level.timerCounter >= level.timerDelayValue {
                     addObstacle(level)
@@ -214,7 +227,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             moveObstacles()
-            
             flagObstaclesOutOfBounds()
             removeFlaggedObstacles()
             
@@ -222,13 +234,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             // keep hero centered in X
             /*
-             if hero.hero.position.x > screenWidth / 2 {
-             hero.hero.position.x = screenWidth / 2
+             if hero.hero.position.x > frameCenter {
+             hero.hero.position.x = frameCenter
              }
-             else if hero.hero.position.x < screenWidth / 2 {
-             hero.hero.position.x = screenWidth / 2
+             else if hero.hero.position.x < frameCenter {
+             hero.hero.position.x = frameCenter
+             }
+            */
+            
+            /*
+             if hero.hero.position.y > background.frame.height {
+             self.physicsWorld.gravity = CGVectorMake(0.0, gravityOutOfWater);
+             }
+             else{
+             self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);
              }
              */
+            
         }
     }
     
@@ -236,10 +258,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let speedIncrease:CGFloat = 0.2
         for obstacle in obstacles {
             if obstacle.direction == .Right {
-                obstacle.movementSpeed += speedIncrease
+                obstacle.movementSpeedX += speedIncrease
             }
             else { // Left
-                obstacle.movementSpeed -= speedIncrease
+                obstacle.movementSpeedX -= speedIncrease
             }
         }
         for level in levels {
@@ -248,8 +270,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
  
-    //MARK: Obstacles
-    func addObstacle(level:Level, specifiedPosition:CGPoint? = nil){
+    //MARK: Obstacles ------------------------------------
+    func addObstacle(level:Level, specifiedPosition:CGPoint? = nil) -> Obstacle {
         let xPos = level.direction == .Right ? leftBoundary : rightBoundary
         var position = CGPoint(x:Int(xPos), y:level.yPosition)
         
@@ -258,7 +280,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         //let obstacle = Obstacle.init(circleOfRadius: radius)
-        
         let obstacle = Obstacle.init(rect:CGRect(origin:position, size:level.rectDimensions))
         obstacle.name = "obs"
         obstacle.levelID = level.levelID
@@ -273,11 +294,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         obstacle.physicsBody?.contactTestBitMask = 1
         
         if level.direction == .Right {
-            obstacle.movementSpeed = level.speed
+            obstacle.movementSpeedX = level.speed
             obstacle.direction = .Right
         }
         else { // Left
-            obstacle.movementSpeed = -level.speed
+            obstacle.movementSpeedX = -level.speed
             obstacle.direction = .Left
         }
         
@@ -300,11 +321,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             obstacle.fillColor = SKColor.purpleColor()
         }
         
-        obstacle.initialMovementSpeed = obstacle.movementSpeed
+        obstacle.movementSpeedY = level.verticalSpeed
         obstacle.position = position
+        //setRotationAngle(level, obstacle: obstacle)
         
         addChild(obstacle)
         obstacles.insert(obstacle)
+        
+        return obstacle
     }
     
     func randomizeLevels(yPos:CGFloat) {
@@ -333,45 +357,66 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             break
         }
         
-        var levelsToRandomize = [Level]()
-        for level in levels {
-            if level.levelID == randomizedID {
-                levelsToRandomize.append(level)
-                level.timerCounter = 0
-            }
-        }
         for obstacle in obstacles {
             if obstacle.levelID == randomizedID {
                 obstacle.flaggedForRemoval = true
             }
         }
         
-        let timerDelayValue = CFTimeInterval(randomBetweenNumbers(1, secondNum: 2.5))
-        let rectDimensions = CGSizeMake(randomBetweenNumbers(10, secondNum: 50), randomBetweenNumbers(10, secondNum: 50))
-        let direction:MovingDirection = randomBool() ? .Left: .Right
-        let speed:CGFloat = randomBetweenNumbers(1, secondNum: 3)
+        let rectX:CGFloat = randomBetweenNumbers(55, secondNum: 65)
+        let rectY:CGFloat = randomBetweenNumbers(20, secondNum: 25)
+        //let s = randomBetweenNumbers(20, secondNum: 50)
+        let rectDimensions = CGSizeMake(rectX, rectY)
         
-        for level in levelsToRandomize {
-            level.rectDimensions = rectDimensions
-            level.timerDelayValue = timerDelayValue
-            level.direction = direction
-            populateObstaclesForLevel(level)
+        let timerDelayValue = randomBetweenNumbers(1.5, secondNum: 2)
+        
+        let direction:MovingDirection = randomBool() ? .Left : .Right
+        
+        let speed:CGFloat = randomBetweenNumbers(1, secondNum: 2)
+        
+        let verticalSpeed:CGFloat = randomBetweenNumbers(-0.2, secondNum: 0.2)
+        
+        
+        let gapSize = CGFloat(timerDelayValue)*(60*(speed/2)) - rectX
+        print(gapSize)
+        
+        
+        for level in levels {
+            if level.levelID == randomizedID {
+                level.rectDimensions = rectDimensions
+                level.timerDelayValue = CFTimeInterval(timerDelayValue)
+                level.direction = direction
+                level.speed = speed
+                level.verticalSpeed = verticalSpeed
+                
+                populateObstaclesForLevel(level)
+                level.timerCounter = 0
+            }
         }
     }
     
     func moveObstacles(){
         for obstacle in obstacles {
-            let move = SKAction.moveBy(CGVector(dx: obstacle.movementSpeed, dy: 0), duration: 0.5)
+            let move = SKAction.moveBy(CGVector(dx: obstacle.movementSpeedX, dy: obstacle.movementSpeedY), duration: 0.5)
             obstacle.runAction(move)
         }
     }
     
     func flagObstaclesOutOfBounds(){
         for obstacle in obstacles {
-            if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 200) ||
-                (obstacle.direction == .Left && obstacle.position.x < -600) {
+            if isOutOfBounds(obstacle) {
                 obstacle.flaggedForRemoval = true
             }
+        }
+    }
+    
+    func isOutOfBounds(obstacle:Obstacle) -> Bool {
+        if (obstacle.direction == .Right && obstacle.position.x > self.frame.width + 200) ||
+            (obstacle.direction == .Left && obstacle.position.x < -600) {
+            return true
+        }
+        else {
+            return false
         }
     }
     
@@ -384,7 +429,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    //MARK: Physics
+    //MARK: Physics ----------------------------------------
     func didBeginContact(contact: SKPhysicsContact) {
         /* Ensure only called while game running */
         if gameState != .Active { return }
@@ -434,7 +479,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
-    //MARK: Touch
+    //MARK: Touch ------------------------------------------
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         isTouching = true
         //hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
@@ -481,7 +526,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         isTouching = false
     }
     
-    //MARK: Misc
+    //MARK: Misc --------------------------------------------
     func restartGame() {
         // use separate function
         //print("DEAD")
@@ -504,7 +549,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return arc4random_uniform(2) == 0 ? true: false
     }
     
-    //MARK: Enemies (unused)
+    func getRotationAngle(level:Level) -> CGFloat { // doesn't work :(
+        let speed = level.direction == .Right ? level.speed : -level.speed
+        
+        let x = CGFloat(level.timerDelayValue)*(60*(speed/2))
+        let y = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed/2))
+        
+        var p =  CGFloat(atan2f(Float(y), Float(x)))
+        if p > 1 || p < -1 {
+            //p = 0
+        }
+        print("x:\(x) y:\(y)   p:\(p)")
+        return p
+    }
+    
+    //MARK: Enemies (unused) --------------------------------
     
     func addEnemyGroup(amount:Int, size:CGFloat, position:CGFloat){
         /*

@@ -11,10 +11,11 @@ import SpriteKit
 
 class Obstacle:SKShapeNode {
     var direction:MovingDirection = .Right
-    var movementSpeed:CGFloat = 1
-    var initialMovementSpeed:CGFloat = 1
+    var movementSpeedX:CGFloat = 1
+    var movementSpeedY:CGFloat = 0
     var levelID:String = ""
     var flaggedForRemoval = false
+    var rotationAngle:CGFloat = 0.0
     
     override init() {
         super.init()
@@ -25,6 +26,14 @@ class Obstacle:SKShapeNode {
         super.init()
         self.fillColor = UIColor.blackColor()
         self.path = CGPathCreateWithRect(rect, nil)
+    }
+    
+    init(rect:CGRect, rotation:CGFloat){
+        super.init()
+        self.fillColor = UIColor.blackColor()
+        self.path = CGPathCreateWithRect(rect, nil)
+        self.rotationAngle = rotation
+        self.zRotation = rotation
     }
     
     init(circleOfRadius: CGFloat){
