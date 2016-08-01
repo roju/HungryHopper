@@ -16,6 +16,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
+        
+        // this will clear all user defaults, setting the high score back to 0
+        //NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
+        
+        // get the high score from device's long-term storage, store it in the high score singleton
+        HighScore.sharedInstance.highScore = NSUserDefaults.standardUserDefaults().objectForKey("HighScore") as? Int ?? 0
+        
         return true
     }
 

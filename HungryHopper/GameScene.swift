@@ -8,11 +8,9 @@
 
 /*
  TODO:
- check hero linear damping: sometimes it gets reset to default, should be 1.3
- make obstacles move diagonally
+ check hero linear damping: sometimesvar gets reset to default, should be 1.3 (trying out higher value 5)
  calculate gap sizes to avoid impossible levels
  add stars to collect at each level
- rotate obstacles moving diagonally
  */
 
 import SpriteKit
@@ -42,11 +40,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var background:SKSpriteNode!
     var startingPlatform:SKSpriteNode!
     var scoreLabel:SKLabelNode!
+    var highScoreLabel:SKLabelNode!
+    
+    var highScoreLabelText = "Best: "
     
     var impulseX:CGFloat = 0.0
     //var impulseXContinuous:CGFloat = 0.05
     var cam:SKCameraNode!
-    let gravityInWater:CGFloat = -2.0
+    let gravityInWater:CGFloat = -1.5
     let gravityOutOfWater:CGFloat = -9.0
     var gameState:GameState = .Active
     var frameCenter:CGFloat = 0
@@ -73,8 +74,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hero = MSReferenceNode(URL: NSURL (fileURLWithPath: resourcePath!))
         
         frameCenter = self.frame.width / 2
-        rightBoundary = frameCenter + 100
-        leftBoundary = frameCenter - 300
+        rightBoundary = frameCenter + 400
+        leftBoundary = frameCenter - 550
         
         hero.hero.position = CGPoint(x: frameCenter, y: 200) //  + hero.hero.size.width
         addChild(hero)
@@ -91,72 +92,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cam.position = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y)
         cam.scaleAsPoint = CGPoint(x: zoomLevel, y: zoomLevel) //the scale sets the zoom level of the camera on the given position
         
-        // add the score label as a child of camera
+        // create the score label
         scoreLabel = SKLabelNode.init(text: "0")
         scoreLabel.fontName = "AvenirNext-Bold"
         scoreLabel.position = CGPoint(x: hero.hero.size.width, y: 200)
         scoreLabel.fontColor = UIColor.whiteColor()
         
+        // add the score label as a child of camera
         cam.addChild(scoreLabel)
+        
+        // create the high score label
+        highScoreLabel = SKLabelNode.init(text: highScoreLabelText + "\(HighScore.sharedInstance.highScore)")
+        highScoreLabel.fontSize = 15
+        highScoreLabel.fontName = "AvenirNext-Bold"
+        highScoreLabel.position = CGPoint(x: -80, y: 225)
+        highScoreLabel.fontColor = UIColor.whiteColor()
+        
+        // add the high score label as a child of camera
+        cam.addChild(highScoreLabel)
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);// gravityInWater
         
-        let tdvA = 2.0, rdA = CGSizeMake(30, 20), dA:MovingDirection = .Right, sA:CGFloat = 1.6
-        let tdvB = 1.8, rdB = CGSizeMake(50, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
-        let tdvC = 1.6, rdC = CGSizeMake(40, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
-        let tdvD = 1.2, rdD = CGSizeMake(20, 20), dD:MovingDirection = .Left, sD:CGFloat = 1.7
-        let tdvE = 1.5, rdE = CGSizeMake(40, 20), dE:MovingDirection = .Right, sE:CGFloat = 1.9
-        let tdvF = 1.9, rdF = CGSizeMake(80, 20), dF:MovingDirection = .Left, sF:CGFloat = 2.1
+        let tdvA = 4.8, rdA = CGSizeMake(30, 20), dA:MovingDirection = .Right, sA:CGFloat = 1.6
+        let tdvB = 4.1, rdB = CGSizeMake(50, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
+        let tdvC = 4.0, rdC = CGSizeMake(40, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
+        let tdvD = 4.4, rdD = CGSizeMake(20, 20), dD:MovingDirection = .Left, sD:CGFloat = 1.7
+        let tdvE = 5.2, rdE = CGSizeMake(40, 20), dE:MovingDirection = .Right, sE:CGFloat = 1.9
+        let tdvF = 5.3, rdF = CGSizeMake(80, 20), dF:MovingDirection = .Left, sF:CGFloat = 2.1
         
-        levels.append(Level.init(timerDelayValue: tdvF, yPosition: 720, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F")) // visual only
-        levels.append(Level.init(timerDelayValue: tdvE, yPosition: 600, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E")) // visual only
-        levels.append(Level.init(timerDelayValue: tdvD, yPosition: 480, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D")) // top
-        levels.append(Level.init(timerDelayValue: tdvC, yPosition: 360, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C"))
-        levels.append(Level.init(timerDelayValue: tdvB, yPosition: 240, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B"))
-        levels.append(Level.init(timerDelayValue: tdvA, yPosition: 120, rectDimensions: rdA, direction: dA, speed: sA, levelID:"A"))
+        levels.append(Level.init(timerDelayValue: tdvF, yPosition: 1440, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F")) // visual only
+        levels.append(Level.init(timerDelayValue: tdvE, yPosition: 1200, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E")) // visual only
+        levels.append(Level.init(timerDelayValue: tdvD, yPosition: 960, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D")) // top
+        levels.append(Level.init(timerDelayValue: tdvC, yPosition: 720, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C"))
+        levels.append(Level.init(timerDelayValue: tdvB, yPosition: 480, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B"))
+        levels.append(Level.init(timerDelayValue: tdvA, yPosition: 240, rectDimensions: rdA, direction: dA, speed: sA, levelID:"A"))
         // hero starting position
         levels.append(Level.init(timerDelayValue: tdvF, yPosition:    0, rectDimensions: rdF, direction: dF, speed: sF, levelID:"F"))
-        levels.append(Level.init(timerDelayValue: tdvE, yPosition: -120, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E"))
-        levels.append(Level.init(timerDelayValue: tdvD, yPosition: -240, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D")) // bottom
-        levels.append(Level.init(timerDelayValue: tdvC, yPosition: -360, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C")) // visual only
-        levels.append(Level.init(timerDelayValue: tdvB, yPosition: -480, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B")) // visual only
+        levels.append(Level.init(timerDelayValue: tdvE, yPosition: -240, rectDimensions: rdE, direction: dE, speed: sE, levelID:"E"))
+        levels.append(Level.init(timerDelayValue: tdvD, yPosition: -480, rectDimensions: rdD, direction: dD, speed: sD, levelID:"D")) // bottom
+        levels.append(Level.init(timerDelayValue: tdvC, yPosition: -720, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C")) // visual only
+        levels.append(Level.init(timerDelayValue: tdvB, yPosition: -960, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B")) // visual only
         
         // initially populate the obstacles for all levels so we don't have to wait for them to move onscreen before we see them
         for level in levels {
-            //populateObstaclesForLevel(level)
-        }
-    }
-    
-    func populateObstaclesForLevel_(level:Level) {
-        addObstacle(level)
-        var xPos:CGFloat = leftBoundary
-        var yPos = CGFloat(level.yPosition)
-        
-        let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
-        let verticalSpacing = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed/2))
-        
-        if level.direction == .Left {
-            xPos = rightBoundary
-        }
-        
-        //for _ in 1...10 {
-        while true {
-            addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: yPos))
-            
-            if level.direction == .Right {
-                if xPos > self.frame.width {
-                    break
-                }
-                xPos += spaceBetweenObstacles
-            }
-            else { // direction .Left
-                if xPos < 0 {
-                    break
-                }
-                xPos -= spaceBetweenObstacles
-            }
-            
-            yPos += verticalSpacing
+            randomizeLevelsWithEnemies(CGFloat(level.yPosition))
+            //populateEnemiesForLevel(level)
         }
     }
     
@@ -166,6 +146,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
         else if gameState == .GameOver {
+            if score > HighScore.sharedInstance.highScore {
+                let defaults = NSUserDefaults.standardUserDefaults()
+                HighScore.sharedInstance.highScore = score
+                defaults.setInteger(score, forKey: "HighScore")
+            }
+            
             restartGame()
         }
         /* Called before each frame is rendered */
@@ -174,16 +160,16 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             // apply impulse to hero continuously while holding finger down on screen
             if isTouching {
-                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.3)) // 0.28
+                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.7)) // 0.3
             }
             //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
             
-            let yBoundary:CGFloat = 480
+            let yBoundary:CGFloat = 960
             if hero.hero.position.y > nextGoalHeight { // passed through a level
                 score += 1
                 nextGoalHeight += 240
-                if nextGoalHeight > yBoundary * 2 {
-                    nextGoalHeight = -yBoundary / 2
+                if nextGoalHeight > yBoundary {
+                    nextGoalHeight = -240
                 }
                 //print("nextGoalHeight: \(nextGoalHeight)")
                 
@@ -194,19 +180,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreLabel.text = String(score)
             
             // passed above level D: Hero reached the top and looped around to bottom of scene
-            if hero.hero.position.y > yBoundary * 2 {
+            if hero.hero.position.y > yBoundary {
                 if startingPlatform != nil {
                     startingPlatform.removeFromParent()
                 }
-                hero.hero.position.y = -yBoundary
+                hero.hero.position.y = -yBoundary / 2
                 // increase speed of obstacles every time hero passes level
                 //increaseGameSpeed()
             }
             
             // loop around to the top of the scene if moving down past lower boundary
-            if hero.hero.position.y < -yBoundary {
-                hero.hero.position.y = yBoundary * 2
+            if hero.hero.position.y < -yBoundary / 2 {
+                hero.hero.position.y = yBoundary
             }
+            
+            print(hero.hero.position)
+            print("next gal height: \(nextGoalHeight)")
             
             // move camera to follow hero
             var camPosition = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y + 200)
@@ -337,7 +326,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return obstacle
     }
     
-    /*
     func randomizeLevelsWithObstacles(yPos:CGFloat) {
         var randomizedID:String = ""
         
@@ -401,7 +389,39 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
     }
- */
+    
+    func populateObstaclesForLevel(level:Level) {
+        addObstacle(level)
+        var xPos:CGFloat = leftBoundary
+        var yPos = CGFloat(level.yPosition)
+        
+        let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
+        let verticalSpacing = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed/2))
+        
+        if level.direction == .Left {
+            xPos = rightBoundary
+        }
+        
+        //for _ in 1...10 {
+        while true {
+            addObstacle(level, specifiedPosition: CGPoint(x: xPos, y: yPos))
+            
+            if level.direction == .Right {
+                if xPos > self.frame.width {
+                    break
+                }
+                xPos += spaceBetweenObstacles
+            }
+            else { // direction .Left
+                if xPos < 0 {
+                    break
+                }
+                xPos -= spaceBetweenObstacles
+            }
+            
+            yPos += verticalSpacing
+        }
+    }
     
     func moveObstacles(){
         for obstacle in obstacles {
@@ -447,7 +467,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             position = specifiedPosition!
         }
         
-        let nameOfTextureFile = String(Int(randomBetweenNumbers(1, secondNum: 24)))
+        let nameOfTextureFile = String(level.enemyType)
         
         let enemy = Enemy.init(imageNamed: nameOfTextureFile)
         
@@ -530,12 +550,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        let rectX:CGFloat = randomBetweenNumbers(55, secondNum: 65)
-        let rectY:CGFloat = randomBetweenNumbers(20, secondNum: 25)
-        //let s = randomBetweenNumbers(20, secondNum: 50)
-        let rectDimensions = CGSizeMake(rectX, rectY)
+        //let rectX:CGFloat = randomBetweenNumbers(55, secondNum: 65)
+        //let rectY:CGFloat = randomBetweenNumbers(20, secondNum: 25)
+        //let rectDimensions = CGSizeMake(rectX, rectY)
         
-        let timerDelayValue = randomBetweenNumbers(1.5, secondNum: 2)
+        let timerDelayValue = randomBetweenNumbers(4.0, secondNum: 5.5)
         
         let direction:MovingDirection = randomBool() ? .Left : .Right
         
@@ -543,22 +562,56 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let verticalSpeed:CGFloat = randomBetweenNumbers(-0.2, secondNum: 0.2)
         
+        let enemyType = Int(randomBetweenNumbers(1, secondNum: 24))
         
         //let gapSize = CGFloat(timerDelayValue)*(60*(speed/2)) - rectX
         //print(gapSize)
         
-        
         for level in levels {
             if level.levelID == randomizedID {
-                level.rectDimensions = rectDimensions
+                //level.rectDimensions = rectDimensions
                 level.timerDelayValue = CFTimeInterval(timerDelayValue)
                 level.direction = direction
                 level.speed = speed
                 level.verticalSpeed = verticalSpeed
+                level.enemyType = enemyType
                 
-                //populateEnemiesForLevel(level)
+                populateEnemiesForLevel(level)
                 level.timerCounter = 0
             }
+        }
+    }
+    
+    func populateEnemiesForLevel(level:Level) {
+        addEnemy(level)
+        var xPos:CGFloat = leftBoundary
+        var yPos = CGFloat(level.yPosition)
+        
+        let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
+        let verticalSpacing = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed/2))
+        
+        if level.direction == .Left {
+            xPos = rightBoundary
+        }
+        
+        //for _ in 1...10 {
+        while true {
+            addEnemy(level, specifiedPosition: CGPoint(x: xPos, y: yPos))
+            
+            if level.direction == .Right {
+                if xPos > self.frame.width {
+                    break
+                }
+                xPos += spaceBetweenObstacles
+            }
+            else { // direction .Left
+                if xPos < 0 {
+                    break
+                }
+                xPos -= spaceBetweenObstacles
+            }
+            
+            yPos += verticalSpacing
         }
     }
     
@@ -571,8 +624,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func enemyIsOutOfBounds(enemy:Enemy) -> Bool {
-        if (enemy.direction == .Right && enemy.position.x > self.frame.width + 200) ||
-            (enemy.direction == .Left && enemy.position.x < -600) {
+        if (enemy.direction == .Right && enemy.position.x > rightBoundary) ||
+            (enemy.direction == .Left && enemy.position.x < leftBoundary) {
             return true
         }
         else {

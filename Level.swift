@@ -21,6 +21,7 @@ class Level {
     var initialTimerDelayValue:CFTimeInterval
     var fillsX:Bool
     var levelID:String
+    var enemyType = 1
     
     init (timerDelayValue:CFTimeInterval, yPosition:Int, rectDimensions:CGSize, direction:MovingDirection, speed:CGFloat, levelID:String) {
         self.timerCounter = 0.0

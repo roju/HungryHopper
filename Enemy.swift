@@ -16,6 +16,7 @@ class Enemy:SKSpriteNode {
     var movementSpeedY:CGFloat = 0
     var levelID:String = ""
     var flaggedForRemoval = false
+    var type = 1
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
         super.init(texture: texture, color: UIColor.clearColor(), size: texture!.size())
