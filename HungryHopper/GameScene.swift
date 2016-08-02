@@ -11,6 +11,15 @@
  check hero linear damping: sometimesvar gets reset to default, should be 1.3 (trying out higher value 5)
  calculate gap sizes to avoid impossible levels
  add stars to collect at each level
+ 
+ FISH TYPES:
+ 1) moves in a line, large gap
+ 2) moves in a line, small fish and small gaps
+ 3) moves in a line, randomized gaps
+ 4) moves at a high diagonal angle, large spacing, zigzag
+ 5) appears randomly in the scene
+ 6) one from each side swims to middle, they touch and swim back
+ 7) fish swim in a circle
  */
 
 import SpriteKit
@@ -60,9 +69,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let zoomLevel = 1.5
     
-    //obstacle
     var obstacles = Set<Obstacle>()
+    
     var levels = [Level]()
+    
+    var collectibles = Set<Collectible>()
     
     //------------------------------------------------------
     
@@ -105,7 +116,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         highScoreLabel = SKLabelNode.init(text: highScoreLabelText + "\(HighScore.sharedInstance.highScore)")
         highScoreLabel.fontSize = 15
         highScoreLabel.fontName = "AvenirNext-Bold"
-        highScoreLabel.position = CGPoint(x: -80, y: 225)
+        highScoreLabel.position = CGPoint(x: -70, y: 225)
         highScoreLabel.fontColor = UIColor.whiteColor()
         
         // add the high score label as a child of camera
@@ -113,6 +124,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);// gravityInWater
         
+        // these default values will be changed when randomized, so they don't matter
         let tdvA = 4.8, rdA = CGSizeMake(30, 20), dA:MovingDirection = .Right, sA:CGFloat = 1.6
         let tdvB = 4.1, rdB = CGSizeMake(50, 20), dB:MovingDirection = .Left, sB:CGFloat = 1.8
         let tdvC = 4.0, rdC = CGSizeMake(40, 20), dC:MovingDirection = .Right, sC:CGFloat = 2.0
@@ -133,11 +145,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         levels.append(Level.init(timerDelayValue: tdvC, yPosition: -720, rectDimensions: rdC, direction: dC, speed: sC, levelID:"C")) // visual only
         levels.append(Level.init(timerDelayValue: tdvB, yPosition: -960, rectDimensions: rdB, direction: dB, speed: sB, levelID:"B")) // visual only
         
-        // initially populate the obstacles for all levels so we don't have to wait for them to move onscreen before we see them
         for level in levels {
+            // initially randomize and populate the obstacles for all levels so we don't have to wait for them to move onscreen before we see them
             randomizeLevelsWithEnemies(CGFloat(level.yPosition))
-            //populateEnemiesForLevel(level)
         }
+        
+        addCollectible(1200)
+        addCollectible(1440)
+    }
+    
+    func addCollectible(yPos:CGFloat) {
+        let nameOfTextureFile = "star1"
+        
+        let collectible = Collectible.init(imageNamed: nameOfTextureFile)
+        
+        collectible.name = "collectible"
+        
+        collectible.physicsBody = SKPhysicsBody.init(texture: collectible.texture!, size: CGSize(width: 512, height: 512))
+        collectible.physicsBody?.dynamic = true
+        collectible.physicsBody?.affectedByGravity = false
+        collectible.physicsBody?.categoryBitMask = 8
+        collectible.physicsBody?.collisionBitMask = 0 //4294967295
+        collectible.physicsBody?.contactTestBitMask = 1
+
+        collectible.position = CGPoint(x:frameCenter, y:yPos)
+        collectible.setScale(0.15)
+        
+        addChild(collectible)
+        collectibles.insert(collectible)
     }
     
     //MARK: Update ---------------------------------------
@@ -179,6 +214,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // update the score label
             scoreLabel.text = String(score)
             
+            // update high score label
+            if score > HighScore.sharedInstance.highScore {
+                highScoreLabel.text = highScoreLabelText + String(score)
+            }
+            
             // passed above level D: Hero reached the top and looped around to bottom of scene
             if hero.hero.position.y > yBoundary {
                 if startingPlatform != nil {
@@ -194,8 +234,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 hero.hero.position.y = yBoundary
             }
             
-            print(hero.hero.position)
-            print("next gal height: \(nextGoalHeight)")
+            //print(hero.hero.position)
+            //print("next g0al height: \(nextGoalHeight)")
             
             // move camera to follow hero
             var camPosition = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y + 200)
@@ -216,9 +256,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
             
+            //print("tmr:\(levels[0].timerCounter)")
+            //print("target:\(levels[0].timerDelayValue)")
+            //print("")
+            
             moveEnemies()
             flagEnemiesOutOfBounds()
             removeFlaggedEnemies()
+            removeFlaggedCollectibles()
             
             //moveObstacles()
             //flagObstaclesOutOfBounds()
@@ -268,7 +313,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     //MARK: Obstacles ------------------------------------
     func addObstacle(level:Level, specifiedPosition:CGPoint? = nil) -> Obstacle {
         let xPos = level.direction == .Right ? leftBoundary : rightBoundary
-        var position = CGPoint(x:Int(xPos), y:level.yPosition)
+        var position = CGPoint(x:xPos, y:level.yPosition)
         
         if specifiedPosition != nil {
             position = specifiedPosition!
@@ -372,7 +417,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let verticalSpeed:CGFloat = randomBetweenNumbers(-0.2, secondNum: 0.2)
         
         
-        let gapSize = CGFloat(timerDelayValue)*(60*(speed/2)) - rectX
+        let gapSize = CGFloat(timerDelayValue)*(60*(speed)) - rectX
         print(gapSize)
         
         
@@ -461,7 +506,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func addEnemy(level:Level, specifiedPosition:CGPoint? = nil) {
         let xPos = level.direction == .Right ? leftBoundary : rightBoundary
-        var position = CGPoint(x:Int(xPos), y:level.yPosition)
+        var position = CGPoint(x:xPos, y:level.yPosition)
         
         if specifiedPosition != nil {
             position = specifiedPosition!
@@ -479,7 +524,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.physicsBody?.affectedByGravity = false
         enemy.physicsBody?.categoryBitMask = 8
         enemy.physicsBody?.collisionBitMask = 0 //4294967295
-        enemy.physicsBody?.contactTestBitMask = 1
+        enemy.physicsBody?.contactTestBitMask = 0 //1
         
         if level.direction == .Right {
             enemy.movementSpeedX = level.speed
@@ -554,11 +599,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //let rectY:CGFloat = randomBetweenNumbers(20, secondNum: 25)
         //let rectDimensions = CGSizeMake(rectX, rectY)
         
-        let timerDelayValue = randomBetweenNumbers(4.0, secondNum: 5.5)
+        let speed:CGFloat = randomBetweenNumbers(2, secondNum: 2.5)
+        
+        let timerDelayValue = randomBetweenNumbers(speed - 1, secondNum: speed)
         
         let direction:MovingDirection = randomBool() ? .Left : .Right
-        
-        let speed:CGFloat = randomBetweenNumbers(1, secondNum: 2)
         
         let verticalSpeed:CGFloat = randomBetweenNumbers(-0.2, secondNum: 0.2)
         
@@ -575,9 +620,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 level.speed = speed
                 level.verticalSpeed = verticalSpeed
                 level.enemyType = enemyType
+                level.timerCounter = 0
                 
                 populateEnemiesForLevel(level)
-                level.timerCounter = 0
+                
+                if level.yPosition < 1200 && level.yPosition > -720 {
+                    // add collectibles to each level
+                    addCollectible(level.yPosition)
+                }
             }
         }
     }
@@ -587,14 +637,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         var xPos:CGFloat = leftBoundary
         var yPos = CGFloat(level.yPosition)
         
-        let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed/2))
-        let verticalSpacing = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed/2))
+        let spaceBetweenObstacles = CGFloat(level.timerDelayValue)*(60*(level.speed))
+        let verticalSpacing = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed))
         
         if level.direction == .Left {
             xPos = rightBoundary
         }
         
-        //for _ in 1...10 {
         while true {
             addEnemy(level, specifiedPosition: CGPoint(x: xPos, y: yPos))
             
@@ -682,6 +731,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if (nodeA.name == "enemy" && nodeB.name == "hero") {
             heroEnemyContact(nodeB as! Hero, enemy: nodeA as! Enemy)
         }
+        
+        
+        if (nodeA.name == "hero" && nodeB.name == "collectible"){
+            heroCollectibleContact(nodeA as! Hero, collectible: nodeB as! Collectible)
+        }
+        else if (nodeA.name == "collectible" && nodeB.name == "hero") {
+            heroCollectibleContact(nodeB as! Hero, collectible: nodeA as! Collectible)
+        }
     }
     
     func heroObstacleContact(hero:Hero, obstacle:Obstacle){
@@ -692,11 +749,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         gameState = .GameOver
     }
     
+    func heroCollectibleContact(hero:Hero, collectible:Collectible){
+        collectible.flaggedForRemoval = true
+    }
+    
+    func removeFlaggedCollectibles() {
+        for collectible in collectibles {
+            if collectible.flaggedForRemoval {
+                collectibles.remove(collectible)
+                collectible.removeFromParent()
+            }
+        }
+    }
+    
     //MARK: Touch ------------------------------------------
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         isTouching = true
         //hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
-        hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 1))//was 0.8
+        //hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 1))//was 0.8
     }
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Update to new touch location */
@@ -765,8 +835,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     func getRotationAngle(level:Level) -> CGFloat { // doesn't work :(
         let speed = level.direction == .Right ? level.speed : -level.speed
         
-        let x = CGFloat(level.timerDelayValue)*(60*(speed/2))
-        let y = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed/2))
+        let x = CGFloat(level.timerDelayValue)*(60*(speed))
+        let y = CGFloat(level.timerDelayValue)*(60*(level.verticalSpeed))
         
         var p =  CGFloat(atan2f(Float(y), Float(x)))
         if p > 1 || p < -1 {

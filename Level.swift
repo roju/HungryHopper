@@ -12,7 +12,7 @@ import SpriteKit
 class Level {
     var timerCounter:CFTimeInterval
     var timerDelayValue:CFTimeInterval
-    var yPosition:Int
+    var yPosition:CGFloat
     var rectDimensions:CGSize
     var direction:MovingDirection
     var speed:CGFloat
@@ -23,7 +23,7 @@ class Level {
     var levelID:String
     var enemyType = 1
     
-    init (timerDelayValue:CFTimeInterval, yPosition:Int, rectDimensions:CGSize, direction:MovingDirection, speed:CGFloat, levelID:String) {
+    init (timerDelayValue:CFTimeInterval, yPosition:CGFloat, rectDimensions:CGSize, direction:MovingDirection, speed:CGFloat, levelID:String) {
         self.timerCounter = 0.0
         self.timerDelayValue = timerDelayValue
         self.initialTimerDelayValue = timerDelayValue
