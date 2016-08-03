@@ -24,8 +24,6 @@
     hero linear damping 8
     heroImpulseY        1.5
     gravityInWater      -2.5
- 
- &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
  */
 
 import SpriteKit
