@@ -8,9 +8,8 @@
 
 /*
  TODO:
- check hero linear damping: sometimesvar gets reset to default, should be 1.3 (trying out higher value 5)
+ check hero linear damping: sometimesvar gets reset to default
  calculate gap sizes to avoid impossible levels
- add stars to collect at each level
  
  FISH TYPES:
  1) moves in a line, large gap
@@ -20,16 +19,17 @@
  5) appears randomly in the scene
  6) one from each side swims to middle, they touch and swim back
  7) fish swim in a circle
+ 
+ CONTROLS:
+    hero linear damping 8
+    heroImpulseY        1.5
+    gravityInWater      -2.5
  */
 
 import SpriteKit
 
 enum GameState {
     case Paused, Active, GameOver
-}
-
-enum ObstacleType {
-    case MarchingLine, Door, BackAndForth
 }
 
 enum MovingDirection {
@@ -56,10 +56,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var impulseX:CGFloat = 0.0
     //var impulseXContinuous:CGFloat = 0.05
     var cam:SKCameraNode!
-    let gravityInWater:CGFloat = -2.0
+    let gravityInWater:CGFloat = -2.5
     let gravityOutOfWater:CGFloat = -9.0
     var gameState:GameState = .Active
     var frameCenter:CGFloat = 0
+    let MAX_FIELD_MASK:UInt32 = 4294967295
     
     var score = 0
     var nextGoalHeight:CGFloat = 240
@@ -70,10 +71,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let zoomLevel = 1.5
     
     var obstacles = Set<Obstacle>()
-    
     var levels = [Level]()
-    
     var collectibles = Set<Collectible>()
+    
+    let heroImpulseY:CGFloat = 1.5
+    
+    var updatedHighScore = false
+    
+    var scoreMultiplier = 1
+    var starScale:CGFloat = 0.1
+    var holdingForCombo = false
+    var comboCancelled = true
+    var justDied = false
+    
+    let 💀 = true
+    
+    var deathDelayCounter:CFTimeInterval = 0
+    var deathDelayBeforeRestarting:CFTimeInterval = 1
     
     //------------------------------------------------------
     
@@ -173,7 +187,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         collectible.physicsBody?.contactTestBitMask = 1
 
         collectible.position = CGPoint(x:frameCenter, y:yPos)
-        collectible.setScale(0.15)
+        collectible.setScale(starScale)
         
         addChild(collectible)
         collectibles.insert(collectible)
@@ -185,13 +199,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
         }
         else if gameState == .GameOver {
-            if score > HighScore.sharedInstance.highScore {
+            // camera follows hero
+            var camPosition = CGPoint(x: hero.hero.position.x, y: hero.hero.position.y + 200)
+            camPosition.x -= hero.hero.size.width
+            let moveCamToPlayer =  SKAction.moveTo(camPosition, duration: 1.0/60.0)
+            cam.runAction(moveCamToPlayer)
+            
+            if justDied { // runs once
+                enableCollisionPhysics()
+                justDied = false
+            }
+            
+            if deathDelayCounter >= deathDelayBeforeRestarting {
+                restartGame()
+            }
+            
+            moveEnemies()
+            flagEnemiesOutOfBounds()
+            removeFlaggedEnemies()
+            removeFlaggedCollectibles()
+            
+            deathDelayCounter += fixedDelta
+            
+            // runs once: if player achieved a high score, save it
+            if score > HighScore.sharedInstance.highScore && !updatedHighScore{
                 let defaults = NSUserDefaults.standardUserDefaults()
                 HighScore.sharedInstance.highScore = score
                 defaults.setInteger(score, forKey: "HighScore")
+                updatedHighScore = true
             }
-            
-            restartGame()
         }
         /* Called before each frame is rendered */
         else if gameState == .Active {
@@ -199,18 +235,31 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             // apply impulse to hero continuously while holding finger down on screen
             if isTouching {
-                hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseX, 0.7)) // 0.3
+                hero.hero.physicsBody!.applyImpulse(CGVectorMake(0, heroImpulseY)) // 0.3 // 0.7
             }
             //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
             
             let yBoundary:CGFloat = 960
             if hero.hero.position.y > nextGoalHeight { // passed through a level
-                score += 1
                 nextGoalHeight += 240
                 if nextGoalHeight > yBoundary {
                     nextGoalHeight = -240
                 }
-                //print("nextGoalHeight: \(nextGoalHeight)")
+                
+                score += 1 * scoreMultiplier
+                
+                if isTouching && !holdingForCombo {
+                    holdingForCombo = true
+                }
+                
+                if holdingForCombo {
+                    scoreMultiplier += 1
+                    starScale += 0.05
+                    
+                    for collectible in collectibles {
+                        collectible.runAction(SKAction.scaleTo(starScale, duration: 0.2))
+                    }
+                }
                 
                 // randomize levels
                 randomizeLevelsWithEnemies(nextGoalHeight)
@@ -295,22 +344,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
              }
              */
             
-        }
-    }
-    
-    func increaseGameSpeed() {
-        let speedIncrease:CGFloat = 0.2
-        for obstacle in obstacles {
-            if obstacle.direction == .Right {
-                obstacle.movementSpeedX += speedIncrease
-            }
-            else { // Left
-                obstacle.movementSpeedX -= speedIncrease
-            }
-        }
-        for level in levels {
-            level.speed += speedIncrease
-            level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 8)
         }
     }
  
@@ -527,8 +560,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.physicsBody?.dynamic = true
         enemy.physicsBody?.affectedByGravity = false
         enemy.physicsBody?.categoryBitMask = 8
-        enemy.physicsBody?.collisionBitMask = 0 //4294967295
+        enemy.physicsBody?.collisionBitMask = 0
         enemy.physicsBody?.contactTestBitMask = 1
+        enemy.physicsBody?.mass = 5
         
         if level.direction == .Right {
             enemy.movementSpeedX = level.speed
@@ -603,13 +637,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //let rectY:CGFloat = randomBetweenNumbers(20, secondNum: 25)
         //let rectDimensions = CGSizeMake(rectX, rectY)
         
-        let speed:CGFloat = randomBetweenNumbers(3.5, secondNum: 4)
+        let speed:CGFloat = randomBetweenNumbers(3.5, secondNum: 4.5)
         
         let timerDelayValue = randomBetweenNumbers(speed/5, secondNum: speed/3)
         
         let direction:MovingDirection = randomBool() ? .Left : .Right
         
-        let verticalSpeed:CGFloat = randomBetweenNumbers(-0.3, secondNum: 0.3)
+        let verticalSpeed:CGFloat = randomBetweenNumbers(-0.4, secondNum: 0.4)
         
         let enemyType = Int(randomBetweenNumbers(1, secondNum: 24))
         
@@ -750,20 +784,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func heroEnemyContact(hero:Hero, enemy:Enemy){
-        gameState = .GameOver
+        if 💀 {
+            justDied = true
+            gameState = .GameOver
+        }
     }
     
     func heroCollectibleContact(hero:Hero, collectible:Collectible){
         collectible.flaggedForRemoval = true
-    }
-    
-    func removeFlaggedCollectibles() {
-        for collectible in collectibles {
-            if collectible.flaggedForRemoval {
-                collectibles.remove(collectible)
-                collectible.removeFromParent()
-            }
-        }
     }
     
     //MARK: Touch ------------------------------------------
@@ -811,6 +839,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     override func touchesEnded(touches: Set<UITouch>, withEvent event: UIEvent?) {
         isTouching = false
+        holdingForCombo = false
+        
+        scoreMultiplier = 1
+        starScale = 0.1
+        
+        for collectible in collectibles {
+            collectible.runAction(SKAction.scaleTo(starScale, duration: 0.2))
+        }
     }
     
     //MARK: Misc --------------------------------------------
@@ -848,6 +884,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         print("x:\(x) y:\(y)   p:\(p)")
         return p
+    }
+    
+    func increaseGameSpeed() {
+        let speedIncrease:CGFloat = 0.2
+        for obstacle in obstacles {
+            if obstacle.direction == .Right {
+                obstacle.movementSpeedX += speedIncrease
+            }
+            else { // Left
+                obstacle.movementSpeedX -= speedIncrease
+            }
+        }
+        for level in levels {
+            level.speed += speedIncrease
+            level.timerDelayValue -= level.timerDelayValue * CFTimeInterval(speedIncrease / 8)
+        }
+    }
+    
+    func removeFlaggedCollectibles() {
+        for collectible in collectibles {
+            if collectible.flaggedForRemoval {
+                collectibles.remove(collectible)
+                collectible.removeFromParent()
+            }
+        }
+    }
+    
+    func enableCollisionPhysics() {
+        hero.hero.physicsBody?.allowsRotation = true
+        hero.hero.physicsBody?.collisionBitMask = MAX_FIELD_MASK
+        hero.hero.physicsBody?.linearDamping = 0
+        
+        for enemy in enemies {
+            enemy.physicsBody?.collisionBitMask = MAX_FIELD_MASK
+        }
     }
     
     //MARK: Unused --------------------------------------------
