@@ -56,7 +56,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var impulseX:CGFloat = 0.0
     //var impulseXContinuous:CGFloat = 0.05
     var cam:SKCameraNode!
-    let gravityInWater:CGFloat = -1.5
+    let gravityInWater:CGFloat = -2.0
     let gravityOutOfWater:CGFloat = -9.0
     var gameState:GameState = .Active
     var frameCenter:CGFloat = 0
@@ -88,7 +88,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         rightBoundary = frameCenter + 400
         leftBoundary = frameCenter - 550
         
-        hero.hero.position = CGPoint(x: frameCenter, y: 200) //  + hero.hero.size.width
+        hero.hero.position = CGPoint(x: frameCenter, y: 150) //  + hero.hero.size.width
         addChild(hero)
         
         physicsWorld.contactDelegate = self
@@ -121,6 +121,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // add the high score label as a child of camera
         cam.addChild(highScoreLabel)
+        
+        let progressView = UIProgressView(progressViewStyle: UIProgressViewStyle.Default)
+        progressView.center = CGPoint(x: 200, y: 150)
+        //self.view!.addSubview(progressView)
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);// gravityInWater
         
@@ -524,7 +528,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.physicsBody?.affectedByGravity = false
         enemy.physicsBody?.categoryBitMask = 8
         enemy.physicsBody?.collisionBitMask = 0 //4294967295
-        enemy.physicsBody?.contactTestBitMask = 0 //1
+        enemy.physicsBody?.contactTestBitMask = 1
         
         if level.direction == .Right {
             enemy.movementSpeedX = level.speed
@@ -599,13 +603,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //let rectY:CGFloat = randomBetweenNumbers(20, secondNum: 25)
         //let rectDimensions = CGSizeMake(rectX, rectY)
         
-        let speed:CGFloat = randomBetweenNumbers(2, secondNum: 2.5)
+        let speed:CGFloat = randomBetweenNumbers(3.5, secondNum: 4)
         
-        let timerDelayValue = randomBetweenNumbers(speed - 1, secondNum: speed)
+        let timerDelayValue = randomBetweenNumbers(speed/5, secondNum: speed/3)
         
         let direction:MovingDirection = randomBool() ? .Left : .Right
         
-        let verticalSpeed:CGFloat = randomBetweenNumbers(-0.2, secondNum: 0.2)
+        let verticalSpeed:CGFloat = randomBetweenNumbers(-0.3, secondNum: 0.3)
         
         let enemyType = Int(randomBetweenNumbers(1, secondNum: 24))
         
