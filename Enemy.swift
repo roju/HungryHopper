@@ -9,6 +9,10 @@
 import Foundation
 import SpriteKit
 
+enum EnemyType {
+    case Slow, Fast, RandomLine, RandomInScene
+}
+
 class Enemy:SKSpriteNode {
     var direction:MovingDirection = .Right
     var sizeValue:CGFloat = 1
@@ -16,7 +20,7 @@ class Enemy:SKSpriteNode {
     var movementSpeedY:CGFloat = 0
     var levelID:String = ""
     var flaggedForRemoval = false
-    var type = 1
+    var type:EnemyType = .Fast
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
         super.init(texture: texture, color: UIColor.clearColor(), size: texture!.size())

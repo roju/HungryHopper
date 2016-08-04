@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		913A9FC71D4964A1009CA619 /* star1.png in Resources */ = {isa = PBXBuildFile; fileRef = 913A9FC61D4964A1009CA619 /* star1.png */; };
 		913A9FC91D4AA5E7009CA619 /* star2.svg in Resources */ = {isa = PBXBuildFile; fileRef = 913A9FC81D4AA5E7009CA619 /* star2.svg */; };
+		914569621D53E73E00B06048 /* restart.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569601D53E73E00B06048 /* restart.png */; };
+		914569631D53E73E00B06048 /* play.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569611D53E73E00B06048 /* play.png */; };
 		9153D10C1D3D844900E98242 /* redfish.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10B1D3D844900E98242 /* redfish.png */; };
 		9153D10E1D3D9C3E00E98242 /* 1.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10D1D3D9C3E00E98242 /* 1.png */; };
 		9153D1251D3EED3800E98242 /* 2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10F1D3EED3800E98242 /* 2.png */; };
@@ -65,11 +67,14 @@
 		91D08B761D35B3930092D664 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D08B751D35B3930092D664 /* Enemy.swift */; };
 		91F9FC511D4FF04D00E26D01 /* HighScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F9FC501D4FF04D00E26D01 /* HighScore.swift */; };
 		91FE305C1D51150900F37756 /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FE305B1D51150900F37756 /* Collectible.swift */; };
+		91FE305E1D53C55D00F37756 /* bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 91FE305D1D53C55D00F37756 /* bubble.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		913A9FC61D4964A1009CA619 /* star1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star1.png; sourceTree = "<group>"; };
 		913A9FC81D4AA5E7009CA619 /* star2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = star2.svg; sourceTree = "<group>"; };
+		914569601D53E73E00B06048 /* restart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = restart.png; sourceTree = "<group>"; };
+		914569611D53E73E00B06048 /* play.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = play.png; sourceTree = "<group>"; };
 		9153D10B1D3D844900E98242 /* redfish.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redfish.png; path = HungryHopper/Assets.xcassets/RedFish.imageset/redfish.png; sourceTree = "<group>"; };
 		9153D10D1D3D9C3E00E98242 /* 1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 1.png; sourceTree = "<group>"; };
 		9153D10F1D3EED3800E98242 /* 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = 2.png; sourceTree = "<group>"; };
@@ -128,6 +133,7 @@
 		91D08B751D35B3930092D664 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Enemy.swift; path = ../Enemy.swift; sourceTree = "<group>"; };
 		91F9FC501D4FF04D00E26D01 /* HighScore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HighScore.swift; path = ../HighScore.swift; sourceTree = "<group>"; };
 		91FE305B1D51150900F37756 /* Collectible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
+		91FE305D1D53C55D00F37756 /* bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bubble.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -208,6 +214,9 @@
 		91D08B771D36C01E0092D664 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				914569601D53E73E00B06048 /* restart.png */,
+				914569611D53E73E00B06048 /* play.png */,
+				91FE305D1D53C55D00F37756 /* bubble.png */,
 				913A9FC81D4AA5E7009CA619 /* star2.svg */,
 				913A9FC61D4964A1009CA619 /* star1.png */,
 				9153D10D1D3D9C3E00E98242 /* 1.png */,
@@ -305,6 +314,7 @@
 				9153D1271D3EED3800E98242 /* 4.png in Resources */,
 				9153D1301D3EED3800E98242 /* 13.png in Resources */,
 				9153D1391D3EED3800E98242 /* 22.png in Resources */,
+				91FE305E1D53C55D00F37756 /* bubble.png in Resources */,
 				9153D1261D3EED3800E98242 /* 3.png in Resources */,
 				91BDF6A81D306DF5009CE6FF /* Assets.xcassets in Resources */,
 				91BDF6D41D358229009CE6FF /* Hero.sks in Resources */,
@@ -318,6 +328,7 @@
 				9153D1291D3EED3800E98242 /* 6.png in Resources */,
 				91BDF6B71D342510009CE6FF /* flyingpenguin@2x.png in Resources */,
 				9153D1331D3EED3800E98242 /* 16.png in Resources */,
+				914569631D53E73E00B06048 /* play.png in Resources */,
 				9153D1321D3EED3800E98242 /* 15.png in Resources */,
 				913A9FC71D4964A1009CA619 /* star1.png in Resources */,
 				91BDF6A61D306DF5009CE6FF /* Main.storyboard in Resources */,
@@ -328,6 +339,7 @@
 				91BDF6D61D358283009CE6FF /* bunny1@2x.png in Resources */,
 				9153D1361D3EED3800E98242 /* 19.png in Resources */,
 				9153D10E1D3D9C3E00E98242 /* 1.png in Resources */,
+				914569621D53E73E00B06048 /* restart.png in Resources */,
 				9153D1351D3EED3800E98242 /* 18.png in Resources */,
 				9153D12D1D3EED3800E98242 /* 10.png in Resources */,
 				9153D13A1D3EED3800E98242 /* 23.png in Resources */,
