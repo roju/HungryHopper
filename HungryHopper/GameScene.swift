@@ -96,7 +96,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var deathDelayCounter:CFTimeInterval = 0
     var deathDelayBeforeRestarting:CFTimeInterval = 1
     
-    var mainButton:MSButtonNode!
+    //var mainButton:MSButtonNode!
     
     //------------------------------------------------------
     
@@ -146,12 +146,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // add the high score label as a child of camera
         cam.addChild(highScoreLabel)
 
+        /*
         mainButton = self.childNodeWithName("MainButton") as! MSButtonNode
-        
         mainButton.selectedHandler = {
             self.gameState = .Active
         }
         mainButton.state = .MSButtonNodeStateHidden
+         */
         
         self.physicsWorld.gravity = CGVectorMake(0.0, gravityInWater);// gravityInWater
         
@@ -197,7 +198,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let moveCamToPlayer =  SKAction.moveTo(camPosition, duration: 1.0/60.0)
             cam.runAction(moveCamToPlayer)
              */
-            
             if justDied { // runs once
                 enableCollisionPhysics()
                 justDied = false
@@ -294,7 +294,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // add new obstacles to all levels
             for level in levels {
                 if level.timerCounter >= level.timerDelayValue {
-                    //addObstacle(level)
                     addEnemy(level)
                     level.timerCounter = 0
                 }
@@ -320,21 +319,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             position = specifiedPosition!
         }
         
-        let nameOfTextureFile = String(level.enemyType)
+        let nameOfTextureFile = "fish" + String(level.enemyType)
         
         let enemy = Enemy.init(imageNamed: nameOfTextureFile)
         
         enemy.name = "enemy"
         enemy.levelID = level.levelID
         
-        enemy.physicsBody = SKPhysicsBody.init(texture: enemy.texture!, size: CGSize(width: 114, height: 116))
+        enemy.texture?.filteringMode = .Nearest
+        enemy.setScale(5.0)
+        
+        enemy.physicsBody = SKPhysicsBody.init(texture: enemy.texture!, size: CGSize(width: 11, height: 7))// 114 116
         enemy.physicsBody?.dynamic = true
         enemy.physicsBody?.affectedByGravity = false
-        enemy.physicsBody?.categoryBitMask = 8
         enemy.physicsBody?.collisionBitMask = 0
         enemy.physicsBody?.contactTestBitMask = 1
-        enemy.physicsBody?.categoryBitMask = MAX_FIELD_MASK
-        enemy.physicsBody?.mass = 1
+ 
+        //enemy.physicsBody?.categoryBitMask = 8
+        //enemy.physicsBody?.categoryBitMask = MAX_FIELD_MASK
+        //enemy.physicsBody?.mass = 1
         
         if level.direction == .Right {
             enemy.movementSpeedX = level.speed
@@ -392,7 +395,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let verticalSpeed:CGFloat = randomBetweenNumbers(-0.4, secondNum: 0.4)
         
-        let enemyType = Int(randomBetweenNumbers(1, secondNum: 24))
+        let enemyType = Int(randomBetweenNumbers(1, secondNum: 5))
         
         //let gapSize = CGFloat(timerDelayValue)*(60*(speed/2)) - rectX
         //print(gapSize)
@@ -641,6 +644,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hero.hero.physicsBody?.collisionBitMask = 1
         hero.hero.physicsBody?.categoryBitMask = MAX_FIELD_MASK
         hero.hero.physicsBody?.linearDamping = 0
+        
+        self.physicsWorld.gravity = CGVectorMake(0.0, -1.0);
         
         for enemy in enemies {
             if enemy.position.y > hero.hero.position.y {
