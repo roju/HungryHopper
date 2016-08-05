@@ -204,6 +204,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             if deathDelayCounter >= deathDelayBeforeRestarting {
+                //Chartboost.showInterstitial(CBLocationHomeScreen)
                 restartGame()
             }
             

@@ -16,6 +16,11 @@
 		9145696B1D553E6600B06048 /* fish3.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569661D553E6600B06048 /* fish3.png */; };
 		9145696C1D553E6600B06048 /* fish4.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569671D553E6600B06048 /* fish4.png */; };
 		9145696D1D553E6600B06048 /* fish5.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569681D553E6600B06048 /* fish5.png */; };
+		9145696F1D55548300B06048 /* Chartboost.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9145696E1D55548300B06048 /* Chartboost.framework */; };
+		914569711D5554A900B06048 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 914569701D5554A900B06048 /* StoreKit.framework */; };
+		914569731D5554BE00B06048 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 914569721D5554BE00B06048 /* Foundation.framework */; };
+		914569751D5554F800B06048 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 914569741D5554F800B06048 /* CoreGraphics.framework */; };
+		914569771D55550100B06048 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 914569761D55550100B06048 /* UIKit.framework */; };
 		9153D10C1D3D844900E98242 /* redfish.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10B1D3D844900E98242 /* redfish.png */; };
 		9195E3AE1D3FEF440062FA6A /* Obstacle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195E3AD1D3FEF440062FA6A /* Obstacle.swift */; };
 		9195E3B01D402E9B0062FA6A /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195E3AF1D402E9B0062FA6A /* Level.swift */; };
@@ -62,6 +67,12 @@
 		914569661D553E6600B06048 /* fish3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fish3.png; sourceTree = "<group>"; };
 		914569671D553E6600B06048 /* fish4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fish4.png; sourceTree = "<group>"; };
 		914569681D553E6600B06048 /* fish5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fish5.png; sourceTree = "<group>"; };
+		9145696E1D55548300B06048 /* Chartboost.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Chartboost.framework; path = HungryHopper/SKTUtils/Chartboost.framework; sourceTree = "<group>"; };
+		914569701D5554A900B06048 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		914569721D5554BE00B06048 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		914569741D5554F800B06048 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		914569761D55550100B06048 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		914569791D55577E00B06048 /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
 		9153D10B1D3D844900E98242 /* redfish.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redfish.png; path = HungryHopper/Assets.xcassets/RedFish.imageset/redfish.png; sourceTree = "<group>"; };
 		9195E3AD1D3FEF440062FA6A /* Obstacle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Obstacle.swift; path = ../Obstacle.swift; sourceTree = "<group>"; };
 		9195E3AF1D402E9B0062FA6A /* Level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Level.swift; path = ../Level.swift; sourceTree = "<group>"; };
@@ -105,6 +116,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				914569771D55550100B06048 /* UIKit.framework in Frameworks */,
+				914569751D5554F800B06048 /* CoreGraphics.framework in Frameworks */,
+				914569731D5554BE00B06048 /* Foundation.framework in Frameworks */,
+				914569711D5554A900B06048 /* StoreKit.framework in Frameworks */,
+				9145696F1D55548300B06048 /* Chartboost.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,6 +130,12 @@
 		91BDF6901D306DF5009CE6FF = {
 			isa = PBXGroup;
 			children = (
+				914569791D55577E00B06048 /* BridgingHeader.h */,
+				914569761D55550100B06048 /* UIKit.framework */,
+				914569741D5554F800B06048 /* CoreGraphics.framework */,
+				914569721D5554BE00B06048 /* Foundation.framework */,
+				9145696E1D55548300B06048 /* Chartboost.framework */,
+				914569701D5554A900B06048 /* StoreKit.framework */,
 				91BDF69B1D306DF5009CE6FF /* HungryHopper */,
 				91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */,
 				91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */,
@@ -420,10 +442,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HungryHopper/SKTUtils",
+				);
 				INFOPLIST_FILE = HungryHopper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.makeschool.HungryHopper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
 			};
 			name = Debug;
 		};
@@ -431,10 +458,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/HungryHopper/SKTUtils",
+				);
 				INFOPLIST_FILE = HungryHopper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.makeschool.HungryHopper;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
 			};
 			name = Release;
 		};

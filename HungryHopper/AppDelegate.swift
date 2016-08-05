@@ -17,6 +17,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
         // Override point for customization after application launch.
         
+        // Initialize the Chartboost library
+        Chartboost.startWithAppId("YOUR_CHARTBOOST_APP_ID", appSignature: "YOUR_CHARTBOOST_APP_SIGNATURE", delegate: nil)
+        
         // this will clear all user defaults, setting the high score back to 0
         //NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
         
