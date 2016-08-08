@@ -19,8 +19,10 @@ class Enemy:SKSpriteNode {
     var movementSpeedX:CGFloat = 1
     var movementSpeedY:CGFloat = 0
     var levelID:String = ""
+    var textureName:String = "fish1"
     var flaggedForRemoval = false
     var type:EnemyType = .Fast
+    var parentLevel:Level? = nil
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
         super.init(texture: texture, color: UIColor.clearColor(), size: texture!.size())

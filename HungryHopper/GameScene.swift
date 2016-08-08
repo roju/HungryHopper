@@ -65,6 +65,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let MAX_FIELD_MASK:UInt32 = 4294967295
     
     var score = 0
+    let LEVEL_SPACING:CGFloat = 240
     var nextGoalHeight:CGFloat = 240
     
     var leftBoundary:CGFloat = 0
@@ -113,6 +114,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         hero.hero.position = CGPoint(x: frameCenter, y: 150) //  + hero.hero.size.width
         hero.hero.physicsBody?.linearDamping = 8
+        //hero.hero.physicsBody?.usesPreciseCollisionDetection = true
         addChild(hero)
         
         physicsWorld.contactDelegate = self
@@ -223,6 +225,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 updatedHighScore = true
             }
         }
+            
         /* Called before each frame is rendered */
         else if gameState == .Active {
             gameTimeStamp += FIXED_DELTA
@@ -235,9 +238,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             let yBoundary:CGFloat = 960
             if hero.hero.position.y > nextGoalHeight { // passed through a level
-                nextGoalHeight += 240
+                nextGoalHeight += LEVEL_SPACING
                 if nextGoalHeight > yBoundary {
-                    nextGoalHeight = -240
+                    nextGoalHeight = -LEVEL_SPACING
                 }
                 
                 score += 1 * scoreMultiplier
@@ -258,6 +261,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 // randomize levels
                 randomizeLevelsWithEnemies(nextGoalHeight)
+                
+                setPhysicsForNearbyEnemies()
             }
             // update the score label
             scoreLabel.text = String(score)
@@ -310,6 +315,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func setPhysicsForNearbyEnemies() {
+        for enemy in enemies {
+            // add this value to account for y position fluctioations due to diagonal movement
+            //let Y_TOLERANCE:CGFloat = 60
+            
+            /*
+            if fabs(enemy.position.y - hero.hero.position.y) < LEVEL_SPACING + Y_TOLERANCE
+                && enemy.position.y < 960 + Y_TOLERANCE
+                && enemy.position.y > -480 - Y_TOLERANCE{
+             
+            }
+               */
+            if enemy.parentLevel!.yPosition == nextGoalHeight {
+                setEnemyPhysicsBody(enemy)
+            }
+                
+            else {
+                enemy.physicsBody = nil
+            }
+        }
+    }
+    
     //MARK: Enemies ---------------------------------------
     
     func addEnemy(level:Level, specifiedPosition:CGPoint? = nil) {
@@ -321,25 +348,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         let nameOfTextureFile = "fish" + String(level.enemyType)
-        
         let enemy = Enemy.init(imageNamed: nameOfTextureFile)
         
+        enemy.textureName = nameOfTextureFile
         enemy.name = "enemy"
         enemy.levelID = level.levelID
+        enemy.parentLevel = level
         
         enemy.texture?.filteringMode = .Nearest
-        enemy.setScale(5.0)
+        //enemy.setScale(5.0)
         
-        enemy.physicsBody = SKPhysicsBody.init(texture: enemy.texture!, size: CGSize(width: 11, height: 7))// 114 116
-        enemy.physicsBody?.dynamic = true
-        enemy.physicsBody?.affectedByGravity = false
-        enemy.physicsBody?.collisionBitMask = 0
-        enemy.physicsBody?.contactTestBitMask = 1
- 
-        //enemy.physicsBody?.categoryBitMask = 8
-        //enemy.physicsBody?.categoryBitMask = MAX_FIELD_MASK
-        //enemy.physicsBody?.mass = 1
-        
+        if level.yPosition == nextGoalHeight {
+            setEnemyPhysicsBody(enemy)
+        }
+        /*
+        if fabs(level.yPosition - hero.hero.position.y) < LEVEL_SPACING {
+            setEnemyPhysicsBody(enemy)
+        }
+        */
         if level.direction == .Right {
             enemy.movementSpeedX = level.speed
             enemy.direction = .Right
@@ -451,6 +477,37 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             yPos += verticalSpacing
         }
+    }
+    
+    func setEnemyPhysicsBody(enemy:Enemy) {
+        var textureDimensions = CGSize(width: 49, height: 22)
+        
+        switch enemy.textureName {
+        case "fish1":
+            textureDimensions = CGSize(width: 49, height: 22)
+            break
+        case "fish2":
+            textureDimensions = CGSize(width: 50, height: 35)
+            break
+        case "fish3":
+            textureDimensions = CGSize(width: 51, height: 32)
+            break
+        case "fish4":
+            textureDimensions = CGSize(width: 50, height: 25)
+            break
+        case "fish5":
+            textureDimensions = CGSize(width: 48, height: 18)
+            break
+        default:
+            break
+        }
+        
+        enemy.physicsBody = SKPhysicsBody.init(texture: enemy.texture!, size: textureDimensions)
+        enemy.physicsBody?.dynamic = true
+        enemy.physicsBody?.affectedByGravity = false
+        enemy.physicsBody?.collisionBitMask = 0
+        enemy.physicsBody?.contactTestBitMask = 1
+        //enemy.physicsBody?.usesPreciseCollisionDetection = true
     }
     
     func flagEnemiesOutOfBounds(){
