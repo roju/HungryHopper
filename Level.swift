@@ -22,6 +22,7 @@ class Level {
     var fillsX:Bool
     var levelID:String
     var enemyType = 1
+    var randomizing = false
     
     init (timerDelayValue:CFTimeInterval, yPosition:CGFloat, rectDimensions:CGSize, direction:MovingDirection, speed:CGFloat, levelID:String) {
         self.timerCounter = 0.0

@@ -8,9 +8,10 @@
 
 /*
  TODO:
- calculate gap sizes to avoid impossible levels
  add shark chasing hero
- add polish to the score increase and combos
+ when executing a combo, a bubble pops up with coins in it, more coins for more combos
+ change score font
+ add menus/buttons
  add sounds
  
  FISH TYPES:
@@ -73,7 +74,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let zoomLevel = 1.5
     
-    var obstacles = Set<Obstacle>()
+    //var obstacles = Set<Obstacle>()
     var levels = [Level]()
     var collectibles = Set<Collectible>()
     
@@ -86,7 +87,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let defaultBubbleScale:CGFloat = 0.8
     var bubbleScale:CGFloat = 0.8
-    let bubbleSizeIncrease:CGFloat = 0.2
+    let bubbleSizeIncrease:CGFloat = 0.1
     
     var holdingForCombo = false
     var comboCancelled = true
@@ -98,6 +99,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var deathDelayBeforeRestarting:CFTimeInterval = 1
     
     //var mainButton:MSButtonNode!
+    
+    //var coin:Coin!
+    
+    var coins = Set<Coin>()
+    
+    var coinRotatingFrames:[SKTexture]!
     
     //------------------------------------------------------
     
@@ -114,6 +121,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         hero.hero.position = CGPoint(x: frameCenter, y: 150) //  + hero.hero.size.width
         hero.hero.physicsBody?.linearDamping = 8
+        hero.hero.physicsBody?.mass = 0.02
+        hero.hero.texture?.filteringMode = .Nearest
+        hero.hero.setScale(2.0)
         //hero.hero.physicsBody?.usesPreciseCollisionDetection = true
         addChild(hero)
         
@@ -184,9 +194,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             randomizeLevelsWithEnemies(CGFloat(level.yPosition))
         }
         
-        addCollectible(1200)
-        addCollectible(1440)
+        //addCollectible(1200)
+        //addCollectible(1440)
+        
+        //addCoin(CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame)))
     }
+    
     
     //MARK: Update ---------------------------------------
     override func update(currentTime: CFTimeInterval) {
@@ -251,7 +264,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 if holdingForCombo {
                     scoreMultiplier += 1
-                    //starScale += 0.05
                     bubbleScale += bubbleSizeIncrease
                     
                     for collectible in collectibles {
@@ -312,28 +324,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             flagEnemiesOutOfBounds()
             removeFlaggedEnemies()
             removeFlaggedCollectibles()
-        }
-    }
-    
-    func setPhysicsForNearbyEnemies() {
-        for enemy in enemies {
-            // add this value to account for y position fluctioations due to diagonal movement
-            //let Y_TOLERANCE:CGFloat = 60
-            
-            /*
-            if fabs(enemy.position.y - hero.hero.position.y) < LEVEL_SPACING + Y_TOLERANCE
-                && enemy.position.y < 960 + Y_TOLERANCE
-                && enemy.position.y > -480 - Y_TOLERANCE{
-             
-            }
-               */
-            if enemy.parentLevel!.yPosition == nextGoalHeight {
-                setEnemyPhysicsBody(enemy)
-            }
-                
-            else {
-                enemy.physicsBody = nil
-            }
         }
     }
     
@@ -416,7 +406,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let speed:CGFloat = randomBetweenNumbers(3.5, secondNum: 4.5)
         
-        let timerDelayValue = randomBetweenNumbers(speed/5, secondNum: speed/3)
+        let timerDelayValue = randomBetweenNumbers(speed/5.5, secondNum: speed/3.5)
         
         let direction:MovingDirection = randomBool() ? .Left : .Right
         
@@ -440,8 +430,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 populateEnemiesForLevel(level)
                 
                 if level.yPosition < 1200 && level.yPosition > -720 {
-                    // add collectibles to each level
-                    addCollectible(level.yPosition)
+                    //addCollectible(yPos)
                 }
             }
         }
@@ -479,6 +468,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
     }
     
+    func setPhysicsForNearbyEnemies() {
+        for enemy in enemies {
+            // add this value to account for y position fluctuations due to diagonal movement
+            //let Y_TOLERANCE:CGFloat = 60
+            
+            /*
+             if fabs(enemy.position.y - hero.hero.position.y) < LEVEL_SPACING + Y_TOLERANCE
+             && enemy.position.y < 960 + Y_TOLERANCE
+             && enemy.position.y > -480 - Y_TOLERANCE{
+             
+             }
+             */
+            if enemy.parentLevel!.yPosition == nextGoalHeight {
+                setEnemyPhysicsBody(enemy)
+            }
+                
+            else {
+                enemy.physicsBody = nil
+            }
+        }
+    }
+    
     func setEnemyPhysicsBody(enemy:Enemy) {
         var textureDimensions = CGSize(width: 49, height: 22)
         
@@ -507,6 +518,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.physicsBody?.affectedByGravity = false
         enemy.physicsBody?.collisionBitMask = 0
         enemy.physicsBody?.contactTestBitMask = 1
+        enemy.physicsBody?.categoryBitMask = 0
+        //enemy.physicsBody?.mass = 0.02
+        //enemy.physicsBody?.density = 0.1
+        
         //enemy.physicsBody?.usesPreciseCollisionDetection = true
     }
     
@@ -571,6 +586,34 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         addChild(collectible)
         collectibles.insert(collectible)
+    }
+    
+    func addCoin(position:CGPoint) {
+        let coinAnimatedAtlas = SKTextureAtlas(named: "coins")
+        var coinFrames = [SKTexture]()
+        
+        let numImages = coinAnimatedAtlas.textureNames.count
+        
+        for index in 1...numImages {
+            let coinTextureName = "coin\(index)"
+            coinFrames.append(coinAnimatedAtlas.textureNamed(coinTextureName))
+        }
+        coinRotatingFrames = coinFrames
+        
+        let firstFrame = coinFrames[0]
+        let newCoin = Coin(texture: firstFrame)
+        
+        newCoin.position = position
+        
+        newCoin.runAction(SKAction.repeatActionForever(
+            SKAction.animateWithTextures(coinRotatingFrames,
+                timePerFrame: 0.1,
+                resize: false,
+                restore: true)),
+                          withKey:"rotatingCoin")
+        
+        addChild(newCoin)
+        coins.insert(newCoin)
     }
     
     //MARK: Physics ----------------------------------------
@@ -674,12 +717,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     func increaseGameSpeed() {
         let speedIncrease:CGFloat = 0.2
-        for obstacle in obstacles {
-            if obstacle.direction == .Right {
-                obstacle.movementSpeedX += speedIncrease
+        for enemy in enemies {
+            if enemy.direction == .Right {
+                enemy.movementSpeedX += speedIncrease
             }
             else { // Left
-                obstacle.movementSpeedX -= speedIncrease
+                enemy.movementSpeedX -= speedIncrease
             }
         }
         for level in levels {
@@ -701,13 +744,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hero.hero.physicsBody?.allowsRotation = true
         hero.hero.physicsBody?.collisionBitMask = 1
         hero.hero.physicsBody?.categoryBitMask = MAX_FIELD_MASK
-        hero.hero.physicsBody?.linearDamping = 0
+        hero.hero.physicsBody?.linearDamping = 1
+        
+        hero.hero.texture = SKTexture(imageNamed: "fb6")
+        hero.hero.texture?.filteringMode = .Nearest
         
         self.physicsWorld.gravity = CGVectorMake(0.0, -1.0);
         
         for enemy in enemies {
             if enemy.position.y > hero.hero.position.y {
                 enemy.physicsBody?.collisionBitMask = 1
+                enemy.physicsBody?.categoryBitMask = MAX_FIELD_MASK
+                enemy.physicsBody?.linearDamping = 2
             }
         }
     }
