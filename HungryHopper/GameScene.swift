@@ -375,7 +375,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             enemy.direction = .Left
         }
         
-        enemy.movementSpeedY = level.verticalSpeed
+        //enemy.movementSpeedY = level.verticalSpeed
         enemy.position = position
         
         addChild(enemy)
@@ -543,9 +543,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             enemy.runAction(move)
             
             if enemy.movementSpeedX > 0 {
-                enemy.xScale = -(abs(enemy.xScale))
-            } else {
                 enemy.xScale = (abs(enemy.xScale))
+            } else {
+                enemy.xScale = -(abs(enemy.xScale))
             }
         }
     }

@@ -14,7 +14,6 @@ enum EnemyType {
 }
 
 class Enemy:SKSpriteNode {
-    var direction:MovingDirection = .Right
     var sizeValue:CGFloat = 1
     var movementSpeedX:CGFloat = 1
     var movementSpeedY:CGFloat = 0
@@ -23,6 +22,7 @@ class Enemy:SKSpriteNode {
     var flaggedForRemoval = false
     var type:EnemyType = .Fast
     var parentLevel:Level? = nil
+    var direction:MovingDirection = .Right
     
     override init(texture: SKTexture?, color: UIColor, size:CGSize){
         super.init(texture: texture, color: UIColor.clearColor(), size: texture!.size())
