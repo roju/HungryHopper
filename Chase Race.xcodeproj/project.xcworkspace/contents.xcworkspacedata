@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:HungryHopper.xcodeproj">
+      location = "self:/Users/ross/Dropbox/Projects/HungryHopper/Chase Race.xcodeproj">
    </FileRef>
 </Workspace>

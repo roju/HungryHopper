@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "91BDF6981D306DF5009CE6FF"
-               BuildableName = "HungryHopper.app"
-               BlueprintName = "HungryHopper"
-               ReferencedContainer = "container:HungryHopper.xcodeproj">
+               BuildableName = "Chase Race.app"
+               BlueprintName = "Chase Race"
+               ReferencedContainer = "container:Chase Race.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "91BDF6981D306DF5009CE6FF"
-            BuildableName = "HungryHopper.app"
-            BlueprintName = "HungryHopper"
-            ReferencedContainer = "container:HungryHopper.xcodeproj">
+            BuildableName = "Chase Race.app"
+            BlueprintName = "Chase Race"
+            ReferencedContainer = "container:Chase Race.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -56,9 +56,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "91BDF6981D306DF5009CE6FF"
-            BuildableName = "HungryHopper.app"
-            BlueprintName = "HungryHopper"
-            ReferencedContainer = "container:HungryHopper.xcodeproj">
+            BuildableName = "Chase Race.app"
+            BlueprintName = "Chase Race"
+            ReferencedContainer = "container:Chase Race.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -75,9 +75,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "91BDF6981D306DF5009CE6FF"
-            BuildableName = "HungryHopper.app"
-            BlueprintName = "HungryHopper"
-            ReferencedContainer = "container:HungryHopper.xcodeproj">
+            BuildableName = "Chase Race.app"
+            BlueprintName = "Chase Race"
+            ReferencedContainer = "container:Chase Race.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

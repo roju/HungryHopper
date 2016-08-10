@@ -10,4 +10,5 @@ import Foundation
 
 class Coin:Collectible {
     var collected = false
+    var parentCollectible:Collectible?
 }

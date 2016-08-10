@@ -16,19 +16,13 @@
 		914569731D5554BE00B06048 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 914569721D5554BE00B06048 /* Foundation.framework */; };
 		914569751D5554F800B06048 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 914569741D5554F800B06048 /* CoreGraphics.framework */; };
 		914569771D55550100B06048 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 914569761D55550100B06048 /* UIKit.framework */; };
-		9145699E1D581F3400B06048 /* fish1.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569991D581F3400B06048 /* fish1.png */; };
-		9145699F1D581F3400B06048 /* fish2.png in Resources */ = {isa = PBXBuildFile; fileRef = 9145699A1D581F3400B06048 /* fish2.png */; };
-		914569A01D581F3400B06048 /* fish3.png in Resources */ = {isa = PBXBuildFile; fileRef = 9145699B1D581F3400B06048 /* fish3.png */; };
-		914569A11D581F3400B06048 /* fish4.png in Resources */ = {isa = PBXBuildFile; fileRef = 9145699C1D581F3400B06048 /* fish4.png */; };
-		914569A21D581F3400B06048 /* fish5.png in Resources */ = {isa = PBXBuildFile; fileRef = 9145699D1D581F3400B06048 /* fish5.png */; };
-		914569AA1D59128C00B06048 /* fb1.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569A41D59128C00B06048 /* fb1.png */; };
-		914569AB1D59128C00B06048 /* fb2.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569A51D59128C00B06048 /* fb2.png */; };
-		914569AC1D59128C00B06048 /* fb3.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569A61D59128C00B06048 /* fb3.png */; };
-		914569AD1D59128C00B06048 /* fb4.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569A71D59128C00B06048 /* fb4.png */; };
-		914569AE1D59128C00B06048 /* fb5.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569A81D59128C00B06048 /* fb5.png */; };
-		914569AF1D59128C00B06048 /* fb6.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569A91D59128C00B06048 /* fb6.png */; };
 		914569BE1D591EEE00B06048 /* coins.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 914569BD1D591EEE00B06048 /* coins.atlas */; };
 		914569C21D591F9F00B06048 /* Coin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 914569C11D591F9F00B06048 /* Coin.swift */; };
+		914569C41D59482700B06048 /* fish.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 914569C31D59482700B06048 /* fish.atlas */; };
+		914569C81D5A557B00B06048 /* shark_open_upscaled.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569C71D5A557B00B06048 /* shark_open_upscaled.png */; };
+		914569CC1D5A56D400B06048 /* shark_closed.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569CB1D5A56D400B06048 /* shark_closed.png */; };
+		914569CF1D5A597200B06048 /* fb5.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569CD1D5A597200B06048 /* fb5.png */; };
+		914569D01D5A597200B06048 /* fb6.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569CE1D5A597200B06048 /* fb6.png */; };
 		9153D10C1D3D844900E98242 /* redfish.png in Resources */ = {isa = PBXBuildFile; fileRef = 9153D10B1D3D844900E98242 /* redfish.png */; };
 		9195E3AE1D3FEF440062FA6A /* Obstacle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195E3AD1D3FEF440062FA6A /* Obstacle.swift */; };
 		9195E3B01D402E9B0062FA6A /* Level.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9195E3AF1D402E9B0062FA6A /* Level.swift */; };
@@ -74,23 +68,17 @@
 		914569741D5554F800B06048 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		914569761D55550100B06048 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		914569791D55577E00B06048 /* BridgingHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BridgingHeader.h; sourceTree = "<group>"; };
-		914569991D581F3400B06048 /* fish1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fish1.png; path = ../fish_upscaled/fish1.png; sourceTree = "<group>"; };
-		9145699A1D581F3400B06048 /* fish2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fish2.png; path = ../fish_upscaled/fish2.png; sourceTree = "<group>"; };
-		9145699B1D581F3400B06048 /* fish3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fish3.png; path = ../fish_upscaled/fish3.png; sourceTree = "<group>"; };
-		9145699C1D581F3400B06048 /* fish4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fish4.png; path = ../fish_upscaled/fish4.png; sourceTree = "<group>"; };
-		9145699D1D581F3400B06048 /* fish5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fish5.png; path = ../fish_upscaled/fish5.png; sourceTree = "<group>"; };
-		914569A41D59128C00B06048 /* fb1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fb1.png; path = ../frogblob/fb1.png; sourceTree = "<group>"; };
-		914569A51D59128C00B06048 /* fb2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fb2.png; path = ../frogblob/fb2.png; sourceTree = "<group>"; };
-		914569A61D59128C00B06048 /* fb3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fb3.png; path = ../frogblob/fb3.png; sourceTree = "<group>"; };
-		914569A71D59128C00B06048 /* fb4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fb4.png; path = ../frogblob/fb4.png; sourceTree = "<group>"; };
-		914569A81D59128C00B06048 /* fb5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fb5.png; path = ../frogblob/fb5.png; sourceTree = "<group>"; };
-		914569A91D59128C00B06048 /* fb6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fb6.png; path = ../frogblob/fb6.png; sourceTree = "<group>"; };
 		914569BD1D591EEE00B06048 /* coins.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = coins.atlas; sourceTree = "<group>"; };
 		914569C11D591F9F00B06048 /* Coin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coin.swift; sourceTree = "<group>"; };
+		914569C31D59482700B06048 /* fish.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = fish.atlas; sourceTree = "<group>"; };
+		914569C71D5A557B00B06048 /* shark_open_upscaled.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shark_open_upscaled.png; sourceTree = "<group>"; };
+		914569CB1D5A56D400B06048 /* shark_closed.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = shark_closed.png; sourceTree = "<group>"; };
+		914569CD1D5A597200B06048 /* fb5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fb5.png; sourceTree = "<group>"; };
+		914569CE1D5A597200B06048 /* fb6.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fb6.png; sourceTree = "<group>"; };
 		9153D10B1D3D844900E98242 /* redfish.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = redfish.png; path = HungryHopper/Assets.xcassets/RedFish.imageset/redfish.png; sourceTree = "<group>"; };
 		9195E3AD1D3FEF440062FA6A /* Obstacle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Obstacle.swift; path = ../Obstacle.swift; sourceTree = "<group>"; };
 		9195E3AF1D402E9B0062FA6A /* Level.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Level.swift; path = ../Level.swift; sourceTree = "<group>"; };
-		91BDF6991D306DF5009CE6FF /* HungryHopper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HungryHopper.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		91BDF6991D306DF5009CE6FF /* Chase Race.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Chase Race.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		91BDF69E1D306DF5009CE6FF /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
 		91BDF6A01D306DF5009CE6FF /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
@@ -151,6 +139,7 @@
 				91BDF69B1D306DF5009CE6FF /* HungryHopper */,
 				91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */,
 				91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */,
+				914569C31D59482700B06048 /* fish.atlas */,
 				914569BD1D591EEE00B06048 /* coins.atlas */,
 				91D08B771D36C01E0092D664 /* images */,
 				91BDF69A1D306DF5009CE6FF /* Products */,
@@ -161,7 +150,7 @@
 		91BDF69A1D306DF5009CE6FF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				91BDF6991D306DF5009CE6FF /* HungryHopper.app */,
+				91BDF6991D306DF5009CE6FF /* Chase Race.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -177,7 +166,6 @@
 				91BDF6B21D342250009CE6FF /* EnemyReferenceNode.swift */,
 				91BDF6D31D358229009CE6FF /* Hero.sks */,
 				91BDF6D11D358210009CE6FF /* Hero.swift */,
-				91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */,
 				91BDF69E1D306DF5009CE6FF /* GameScene.sks */,
 				91BDF6A01D306DF5009CE6FF /* GameScene.swift */,
 				91FE305B1D51150900F37756 /* Collectible.swift */,
@@ -187,6 +175,7 @@
 				91BDF6A91D306DF5009CE6FF /* LaunchScreen.storyboard */,
 				91BDF6AC1D306DF5009CE6FF /* Info.plist */,
 				91BDF6A21D306DF5009CE6FF /* GameViewController.swift */,
+				91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */,
 			);
 			path = HungryHopper;
 			sourceTree = "<group>";
@@ -214,17 +203,10 @@
 		91D08B771D36C01E0092D664 /* images */ = {
 			isa = PBXGroup;
 			children = (
-				914569A41D59128C00B06048 /* fb1.png */,
-				914569A51D59128C00B06048 /* fb2.png */,
-				914569A61D59128C00B06048 /* fb3.png */,
-				914569A71D59128C00B06048 /* fb4.png */,
-				914569A81D59128C00B06048 /* fb5.png */,
-				914569A91D59128C00B06048 /* fb6.png */,
-				914569991D581F3400B06048 /* fish1.png */,
-				9145699A1D581F3400B06048 /* fish2.png */,
-				9145699B1D581F3400B06048 /* fish3.png */,
-				9145699C1D581F3400B06048 /* fish4.png */,
-				9145699D1D581F3400B06048 /* fish5.png */,
+				914569CB1D5A56D400B06048 /* shark_closed.png */,
+				914569C71D5A557B00B06048 /* shark_open_upscaled.png */,
+				914569CD1D5A597200B06048 /* fb5.png */,
+				914569CE1D5A597200B06048 /* fb6.png */,
 				914569601D53E73E00B06048 /* restart.png */,
 				914569611D53E73E00B06048 /* play.png */,
 				91FE305D1D53C55D00F37756 /* bubble.png */,
@@ -238,9 +220,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		91BDF6981D306DF5009CE6FF /* HungryHopper */ = {
+		91BDF6981D306DF5009CE6FF /* Chase Race */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 91BDF6AF1D306DF5009CE6FF /* Build configuration list for PBXNativeTarget "HungryHopper" */;
+			buildConfigurationList = 91BDF6AF1D306DF5009CE6FF /* Build configuration list for PBXNativeTarget "Chase Race" */;
 			buildPhases = (
 				91BDF6951D306DF5009CE6FF /* Sources */,
 				91BDF6961D306DF5009CE6FF /* Frameworks */,
@@ -250,9 +232,9 @@
 			);
 			dependencies = (
 			);
-			name = HungryHopper;
+			name = "Chase Race";
 			productName = HungryHopper;
-			productReference = 91BDF6991D306DF5009CE6FF /* HungryHopper.app */;
+			productReference = 91BDF6991D306DF5009CE6FF /* Chase Race.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -270,7 +252,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 91BDF6941D306DF5009CE6FF /* Build configuration list for PBXProject "HungryHopper" */;
+			buildConfigurationList = 91BDF6941D306DF5009CE6FF /* Build configuration list for PBXProject "Chase Race" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -283,7 +265,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				91BDF6981D306DF5009CE6FF /* HungryHopper */,
+				91BDF6981D306DF5009CE6FF /* Chase Race */,
 			);
 		};
 /* End PBXProject section */
@@ -293,30 +275,24 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				914569C81D5A557B00B06048 /* shark_open_upscaled.png in Resources */,
 				91BDF69F1D306DF5009CE6FF /* GameScene.sks in Resources */,
-				914569AE1D59128C00B06048 /* fb5.png in Resources */,
 				914569BE1D591EEE00B06048 /* coins.atlas in Resources */,
-				914569AC1D59128C00B06048 /* fb3.png in Resources */,
-				914569A21D581F3400B06048 /* fish5.png in Resources */,
-				914569AD1D59128C00B06048 /* fb4.png in Resources */,
 				91BDF6AB1D306DF5009CE6FF /* LaunchScreen.storyboard in Resources */,
-				914569AA1D59128C00B06048 /* fb1.png in Resources */,
 				91FE305E1D53C55D00F37756 /* bubble.png in Resources */,
-				9145699E1D581F3400B06048 /* fish1.png in Resources */,
+				914569CC1D5A56D400B06048 /* shark_closed.png in Resources */,
 				91BDF6A81D306DF5009CE6FF /* Assets.xcassets in Resources */,
-				914569AB1D59128C00B06048 /* fb2.png in Resources */,
+				914569CF1D5A597200B06048 /* fb5.png in Resources */,
 				91BDF6D41D358229009CE6FF /* Hero.sks in Resources */,
 				91BDF6B51D34247E009CE6FF /* Enemy.sks in Resources */,
 				913A9FC91D4AA5E7009CA619 /* star2.svg in Resources */,
-				9145699F1D581F3400B06048 /* fish2.png in Resources */,
-				914569AF1D59128C00B06048 /* fb6.png in Resources */,
+				914569D01D5A597200B06048 /* fb6.png in Resources */,
 				9153D10C1D3D844900E98242 /* redfish.png in Resources */,
 				914569631D53E73E00B06048 /* play.png in Resources */,
-				914569A11D581F3400B06048 /* fish4.png in Resources */,
 				913A9FC71D4964A1009CA619 /* star1.png in Resources */,
+				914569C41D59482700B06048 /* fish.atlas in Resources */,
 				91BDF6A61D306DF5009CE6FF /* Main.storyboard in Resources */,
 				914569621D53E73E00B06048 /* restart.png in Resources */,
-				914569A01D581F3400B06048 /* fish3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -473,7 +449,7 @@
 				INFOPLIST_FILE = HungryHopper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.makeschool.HungryHopper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Chase Race";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
 			};
 			name = Debug;
@@ -489,7 +465,7 @@
 				INFOPLIST_FILE = HungryHopper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.makeschool.HungryHopper;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "Chase Race";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
 			};
 			name = Release;
@@ -497,7 +473,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		91BDF6941D306DF5009CE6FF /* Build configuration list for PBXProject "HungryHopper" */ = {
+		91BDF6941D306DF5009CE6FF /* Build configuration list for PBXProject "Chase Race" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				91BDF6AD1D306DF5009CE6FF /* Debug */,
@@ -506,7 +482,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		91BDF6AF1D306DF5009CE6FF /* Build configuration list for PBXNativeTarget "HungryHopper" */ = {
+		91BDF6AF1D306DF5009CE6FF /* Build configuration list for PBXNativeTarget "Chase Race" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				91BDF6B01D306DF5009CE6FF /* Debug */,

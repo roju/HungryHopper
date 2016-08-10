@@ -14,6 +14,8 @@
  add menus/buttons
  add sounds
  
+ improve performance (fix "skipping" hero movement)
+ 
  FISH TYPES:
  1) moves in a line, large gap
  2) moves in a line, small fish and small gaps
@@ -74,37 +76,41 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     let zoomLevel = 1.5
     
-    //var obstacles = Set<Obstacle>()
     var levels = [Level]()
     var collectibles = Set<Collectible>()
     
-    let heroImpulseY:CGFloat = 1.5
+    let defaultHeroImpulseY:CGFloat = 1.5
+    var heroImpulseY:CGFloat = 1.5
+    let yBoundary:CGFloat = 960
     
     var updatedHighScore = false
+
+    //var starScale:CGFloat = 0.1
     
-    var scoreMultiplier = 1
-    var starScale:CGFloat = 0.1
-    
-    let defaultBubbleScale:CGFloat = 0.8
-    var bubbleScale:CGFloat = 0.8
-    let bubbleSizeIncrease:CGFloat = 0.1
+    let defaultBubbleScale:CGFloat = 1
+    var bubbleScale:CGFloat = 1
+    let bubbleSizeIncrease:CGFloat = 2
     
     var holdingForCombo = false
     var comboCancelled = true
     var justDied = false
     
-    let 💀 = true
+    let 💀 = true // death/gameOver enabled
     
     var deathDelayCounter:CFTimeInterval = 0
     var deathDelayBeforeRestarting:CFTimeInterval = 1
     
     //var mainButton:MSButtonNode!
-    
     //var coin:Coin!
     
     var coins = Set<Coin>()
+    var coinsToAdd = 0
     
-    var coinRotatingFrames:[SKTexture]!
+    var shark:SKSpriteNode!
+    var sharkSpeed:CGFloat = 6
+    
+    var initialMovement = false
+    var moveShark = true
     
     //------------------------------------------------------
     
@@ -120,10 +126,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         leftBoundary = frameCenter - 550
         
         hero.hero.position = CGPoint(x: frameCenter, y: 150) //  + hero.hero.size.width
+        hero.hero.size = CGSizeMake(hero.hero.size.width * 2, hero.hero.size.height * 2)
+        
+        hero.hero.physicsBody = SKPhysicsBody.init(texture: hero.hero.texture!, size: hero.hero.size)
         hero.hero.physicsBody?.linearDamping = 8
         hero.hero.physicsBody?.mass = 0.02
         hero.hero.texture?.filteringMode = .Nearest
-        hero.hero.setScale(2.0)
+        
+        //hero.hero.setScale(2.0)
         //hero.hero.physicsBody?.usesPreciseCollisionDetection = true
         addChild(hero)
         
@@ -197,7 +207,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //addCollectible(1200)
         //addCollectible(1440)
         
-        //addCoin(CGPoint(x:CGRectGetMidX(self.frame), y:CGRectGetMidY(self.frame)))
+        addShark()
     }
     
     
@@ -246,29 +256,48 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             // apply impulse to hero continuously while holding finger down on screen
             if isTouching {
                 hero.hero.physicsBody!.applyImpulse(CGVectorMake(0, heroImpulseY)) // 0.3 // 0.7
+                
+                //shark.physicsBody?.applyImpulse(CGVectorMake(0, -heroImpulseY))
             }
             //hero.hero.physicsBody!.applyImpulse(CGVectorMake(impulseXContinuous, 0))
             
-            let yBoundary:CGFloat = 960
             if hero.hero.position.y > nextGoalHeight { // passed through a level
                 nextGoalHeight += LEVEL_SPACING
                 if nextGoalHeight > yBoundary {
                     nextGoalHeight = -LEVEL_SPACING
                 }
-                
-                score += 1 * scoreMultiplier
+                score += 1
                 
                 if isTouching && !holdingForCombo {
                     holdingForCombo = true
                 }
                 
                 if holdingForCombo {
-                    scoreMultiplier += 1
-                    bubbleScale += bubbleSizeIncrease
+                    if coinsToAdd > 0 {
+                        let newBubble = addCollectible(nextGoalHeight)
+                        hero.hero.addChild(newBubble)
+                        
+                        print(newBubble.size.width)
+                        
+                        for _ in 1...coinsToAdd {
+                            let boundary = bubbleScale / 2
+                            var randX = randomBetweenNumbers(-boundary, secondNum: boundary)
+                            var randY = randomBetweenNumbers(-boundary, secondNum: boundary)
+                            if coinsToAdd == 1 {randX = 0; randY = 0}
+                            
+                            newBubble.addChild(addCoin(CGPoint(x:randX, y:randY)))
+                        }
+                    }
                     
+                    coinsToAdd += 1
+                    bubbleScale += bubbleSizeIncrease
+                    heroImpulseY += 0.1
+                    
+                    /*
                     for collectible in collectibles {
                         collectible.runAction(SKAction.scaleTo(bubbleScale, duration: 0.2))
                     }
+                    */
                 }
                 
                 // randomize levels
@@ -321,6 +350,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
             
             moveEnemies()
+            moveCollectibles()
             flagEnemiesOutOfBounds()
             removeFlaggedEnemies()
             removeFlaggedCollectibles()
@@ -346,7 +376,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         enemy.parentLevel = level
         
         enemy.texture?.filteringMode = .Nearest
-        //enemy.setScale(5.0)
         
         if level.yPosition == nextGoalHeight {
             setEnemyPhysicsBody(enemy)
@@ -404,9 +433,19 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             }
         }
         
-        let speed:CGFloat = randomBetweenNumbers(3.5, secondNum: 4.5)
+        /*
+         hard:
+         speed 3.5 4.5
+         tdv   5.5 3.5
+         
+         med:
+         speed 3.5 4.5
+         tdv   4.5 3.5
+        */
         
-        let timerDelayValue = randomBetweenNumbers(speed/5.5, secondNum: speed/3.5)
+        let speed:CGFloat = randomBetweenNumbers(3.5, secondNum: 5.0)
+        
+        let timerDelayValue = randomBetweenNumbers(speed/5.5, secondNum: speed/4)
         
         let direction:MovingDirection = randomBool() ? .Left : .Right
         
@@ -437,7 +476,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func populateEnemiesForLevel(level:Level) {
-        //addEnemy(level)
         var xPos:CGFloat = leftBoundary
         var yPos = CGFloat(level.yPosition)
         
@@ -525,6 +563,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //enemy.physicsBody?.usesPreciseCollisionDetection = true
     }
     
+    func addShark() {
+        shark = SKSpriteNode.init(imageNamed: "shark_open_upscaled")
+        shark.texture?.filteringMode = .Nearest
+        shark.size = CGSizeMake(shark.size.width * 2, shark.size.height * 2)
+        shark.position = CGPointMake(-30, -600)
+        shark.name = "shark"
+        
+        shark.physicsBody = SKPhysicsBody.init(texture: shark.texture!, size: shark.size)
+        shark.physicsBody?.dynamic = true
+        shark.physicsBody?.affectedByGravity = false
+        shark.physicsBody?.collisionBitMask = 0
+        shark.physicsBody?.contactTestBitMask = 1
+        shark.physicsBody?.categoryBitMask = 0
+        //shark.physicsBody?.mass = (hero.hero.physicsBody?.mass)!
+        
+        hero.hero.addChild(shark)
+    }
+    
     func flagEnemiesOutOfBounds(){
         for enemy in enemies {
             if enemyIsOutOfBounds(enemy) {
@@ -563,32 +619,51 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 enemy.xScale = -(abs(enemy.xScale))
             }
         }
+        
+        //print("shark pos: \(shark.position.y)")
+        
+        if moveShark {
+            // move shark
+            if shark.position.y >= -300 && initialMovement {
+                shark.runAction(SKAction.moveBy(CGVector(dx: 0, dy: sharkSpeed / 1.5), duration: 0))
+            }
+            else if shark.position.y >= -600 && initialMovement {
+                shark.runAction(SKAction.moveBy(CGVector(dx: 0, dy: sharkSpeed), duration: 0))
+            }
+            else {
+                shark.position.y = -600
+            }
+        }
     }
     
     //MARK: Collectible ------------------------------------
     
-    func addCollectible(yPos:CGFloat) {
+    func addCollectible(yPos:CGFloat) -> Collectible {
         let nameOfTextureFile = "bubble"//"star1"
         
         let collectible = Collectible.init(imageNamed: nameOfTextureFile)
         
         collectible.name = "collectible"
         
-        collectible.physicsBody = SKPhysicsBody.init(texture: collectible.texture!, size: CGSize(width: 32, height: 32))//(width: 512, height: 512))
+        collectible.physicsBody = SKPhysicsBody.init(texture: collectible.texture!, size: CGSize(width:32, height:32))
         collectible.physicsBody?.dynamic = false
         collectible.physicsBody?.affectedByGravity = false
         collectible.physicsBody?.categoryBitMask = 0
         collectible.physicsBody?.collisionBitMask = 0
         collectible.physicsBody?.contactTestBitMask = 1
         
-        collectible.position = CGPoint(x:frameCenter, y:yPos)
-        collectible.setScale(bubbleScale)
+        collectible.position = CGPoint(x:0, y:LEVEL_SPACING)//frameCenter, yPos
+        collectible.texture!.filteringMode = .Nearest
+        //collectible.setScale(bubbleScale)
+        collectible.size = CGSizeMake(collectible.size.width + bubbleScale, collectible.size.height + bubbleScale)
         
-        addChild(collectible)
+        //addChild(collectible)
         collectibles.insert(collectible)
+        
+        return collectible
     }
     
-    func addCoin(position:CGPoint) {
+    func addCoin(position:CGPoint) -> Coin {
         let coinAnimatedAtlas = SKTextureAtlas(named: "coins")
         var coinFrames = [SKTexture]()
         
@@ -598,22 +673,35 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             let coinTextureName = "coin\(index)"
             coinFrames.append(coinAnimatedAtlas.textureNamed(coinTextureName))
         }
-        coinRotatingFrames = coinFrames
+        let coinRotatingFrames:[SKTexture]! = coinFrames
         
         let firstFrame = coinFrames[0]
         let newCoin = Coin(texture: firstFrame)
         
         newCoin.position = position
+        newCoin.texture?.filteringMode = .Nearest
         
         newCoin.runAction(SKAction.repeatActionForever(
             SKAction.animateWithTextures(coinRotatingFrames,
                 timePerFrame: 0.1,
                 resize: false,
                 restore: true)),
-                          withKey:"rotatingCoin")
+                withKey:"rotatingCoin")
         
-        addChild(newCoin)
         coins.insert(newCoin)
+        
+        return newCoin
+    }
+    
+    func moveCollectibles() {
+        for collectible in collectibles {
+            let move = SKAction.moveBy(CGVector(dx: 0, dy: 2), duration: 0.1)
+            collectible.runAction(move)
+        }
+    }
+    
+    func moveCoins() {
+        
     }
     
     //MARK: Physics ----------------------------------------
@@ -638,10 +726,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         
         if (nodeA.name == "hero" && nodeB.name == "enemy"){
-            heroEnemyContact(nodeA as! Hero, enemy: nodeB as! Enemy)
+            heroEnemyContact()//nodeA as! Hero, enemy: nodeB as! Enemy
         }
         else if (nodeA.name == "enemy" && nodeB.name == "hero") {
-            heroEnemyContact(nodeB as! Hero, enemy: nodeA as! Enemy)
+            heroEnemyContact()//nodeB as! Hero, enemy: nodeA as! Enemy
         }
         
         
@@ -651,16 +739,44 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         else if (nodeA.name == "collectible" && nodeB.name == "hero") {
             heroCollectibleContact(nodeB as! Hero, collectible: nodeA as! Collectible)
         }
+        
+        if (nodeA.name == "hero" && nodeB.name == "shark"){
+            heroSharkContact()//nodeA as! Hero, shark: nodeB as! SKSpriteNode
+        }
+        else if (nodeA.name == "shark" && nodeB.name == "hero") {
+            heroSharkContact()//nodeB as! Hero, shark: nodeA as! SKSpriteNode
+        }
+    }
+    
+    func heroSharkContact (){//hero:Hero, shark:SKSpriteNode
+        if 💀 {
+            hero.hero.physicsBody?.dynamic = false
+            hero.hero.size = CGSizeMake(0, 0)
+            
+            shark.texture = SKTexture(imageNamed: "shark_closed")
+            
+            justDied = true
+            gameState = .GameOver
+        }
     }
     
     func heroObstacleContact(hero:Hero, obstacle:Obstacle){
         gameState = .GameOver
     }
     
-    func heroEnemyContact(hero:Hero, enemy:Enemy){
+    func heroEnemyContact(){ // hero:Hero, enemy:Enemy
         if 💀 {
             justDied = true
+            moveShark = false
             gameState = .GameOver
+            
+            //var oldPos = shark.position.y
+            //shark.moveToParent(self)
+            
+            //shark.position.y = 550//hero.hero.position.y
+            //shark.position.x = 200//hero.hero.position.x
+            
+            
         }
     }
     
@@ -670,6 +786,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     //MARK: Touch ------------------------------------------
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
+        initialMovement = true
         isTouching = true
         
         // flappy bird controls
@@ -683,9 +800,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         isTouching = false
         holdingForCombo = false
         
-        scoreMultiplier = 1
-        starScale = 0.1
+        coinsToAdd = 0
+        //starScale = 0.1
         bubbleScale = defaultBubbleScale
+        heroImpulseY = defaultHeroImpulseY
         
         for collectible in collectibles {
             collectible.runAction(SKAction.scaleTo(defaultBubbleScale, duration: 0.2))

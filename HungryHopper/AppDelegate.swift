@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         Chartboost.startWithAppId("YOUR_CHARTBOOST_APP_ID", appSignature: "YOUR_CHARTBOOST_APP_SIGNATURE", delegate: nil)
         
         // this will clear all user defaults, setting the high score back to 0
-        NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
+        //NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
         
         // get the high score from device's long-term storage, store it in the high score singleton
         HighScore.sharedInstance.highScore = NSUserDefaults.standardUserDefaults().objectForKey("HighScore") as? Int ?? 0
