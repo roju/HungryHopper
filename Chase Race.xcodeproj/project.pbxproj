@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		911431951D5C1A0D00FC22AE /* boxybold.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 911431941D5C1A0D00FC22AE /* boxybold.atlas */; };
 		913A9FC71D4964A1009CA619 /* star1.png in Resources */ = {isa = PBXBuildFile; fileRef = 913A9FC61D4964A1009CA619 /* star1.png */; };
 		913A9FC91D4AA5E7009CA619 /* star2.svg in Resources */ = {isa = PBXBuildFile; fileRef = 913A9FC81D4AA5E7009CA619 /* star2.svg */; };
 		914569621D53E73E00B06048 /* restart.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569601D53E73E00B06048 /* restart.png */; };
@@ -58,6 +59,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		911431941D5C1A0D00FC22AE /* boxybold.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = boxybold.atlas; sourceTree = "<group>"; };
 		913A9FC61D4964A1009CA619 /* star1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star1.png; sourceTree = "<group>"; };
 		913A9FC81D4AA5E7009CA619 /* star2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = star2.svg; sourceTree = "<group>"; };
 		914569601D53E73E00B06048 /* restart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = restart.png; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 				91BDF69B1D306DF5009CE6FF /* HungryHopper */,
 				91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */,
 				91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */,
+				911431941D5C1A0D00FC22AE /* boxybold.atlas */,
 				914569C31D59482700B06048 /* fish.atlas */,
 				914569BD1D591EEE00B06048 /* coins.atlas */,
 				91D08B771D36C01E0092D664 /* images */,
@@ -158,24 +161,24 @@
 		91BDF69B1D306DF5009CE6FF /* HungryHopper */ = {
 			isa = PBXGroup;
 			children = (
+				91BDF6A01D306DF5009CE6FF /* GameScene.swift */,
+				91BDF69E1D306DF5009CE6FF /* GameScene.sks */,
 				91F9FC501D4FF04D00E26D01 /* HighScore.swift */,
 				9195E3AF1D402E9B0062FA6A /* Level.swift */,
 				9195E3AD1D3FEF440062FA6A /* Obstacle.swift */,
 				91BDF6B41D34247E009CE6FF /* Enemy.sks */,
 				91D08B751D35B3930092D664 /* Enemy.swift */,
-				91BDF6B21D342250009CE6FF /* EnemyReferenceNode.swift */,
 				91BDF6D31D358229009CE6FF /* Hero.sks */,
 				91BDF6D11D358210009CE6FF /* Hero.swift */,
-				91BDF69E1D306DF5009CE6FF /* GameScene.sks */,
-				91BDF6A01D306DF5009CE6FF /* GameScene.swift */,
 				91FE305B1D51150900F37756 /* Collectible.swift */,
 				914569C11D591F9F00B06048 /* Coin.swift */,
-				91BDF6A41D306DF5009CE6FF /* Main.storyboard */,
-				91BDF6A71D306DF5009CE6FF /* Assets.xcassets */,
-				91BDF6A91D306DF5009CE6FF /* LaunchScreen.storyboard */,
-				91BDF6AC1D306DF5009CE6FF /* Info.plist */,
+				91BDF6B21D342250009CE6FF /* EnemyReferenceNode.swift */,
 				91BDF6A21D306DF5009CE6FF /* GameViewController.swift */,
 				91BDF69C1D306DF5009CE6FF /* AppDelegate.swift */,
+				91BDF6AC1D306DF5009CE6FF /* Info.plist */,
+				91BDF6A41D306DF5009CE6FF /* Main.storyboard */,
+				91BDF6A91D306DF5009CE6FF /* LaunchScreen.storyboard */,
+				91BDF6A71D306DF5009CE6FF /* Assets.xcassets */,
 			);
 			path = HungryHopper;
 			sourceTree = "<group>";
@@ -287,6 +290,7 @@
 				91BDF6B51D34247E009CE6FF /* Enemy.sks in Resources */,
 				913A9FC91D4AA5E7009CA619 /* star2.svg in Resources */,
 				914569D01D5A597200B06048 /* fb6.png in Resources */,
+				911431951D5C1A0D00FC22AE /* boxybold.atlas in Resources */,
 				9153D10C1D3D844900E98242 /* redfish.png in Resources */,
 				914569631D53E73E00B06048 /* play.png in Resources */,
 				913A9FC71D4964A1009CA619 /* star1.png in Resources */,

@@ -8,8 +8,6 @@
 
 /*
  TODO:
- add shark chasing hero
- when executing a combo, a bubble pops up with coins in it, more coins for more combos
  change score font
  add menus/buttons
  add sounds
@@ -54,8 +52,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var background:SKSpriteNode!
     var startingPlatform:SKSpriteNode!
     var scoreLabel:SKLabelNode!
+    var scoreNode:SKSpriteNode!
     var highScoreLabel:SKLabelNode!
-    
     var highScoreLabelText = "Best: "
     
     var impulseX:CGFloat = 0.0
@@ -150,6 +148,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         cam.scaleAsPoint = CGPoint(x: zoomLevel, y: zoomLevel) //the scale sets the zoom level of the camera on the given position
         
         // create the score label
+        /*
         scoreLabel = SKLabelNode.init(text: "0")
         scoreLabel.fontName = "AvenirNext-Bold"
         scoreLabel.position = CGPoint(x: hero.hero.size.width, y: 200)
@@ -157,6 +156,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // add the score label as a child of camera
         cam.addChild(scoreLabel)
+        */
+        
+        updateScore()
         
         // create the high score label
         highScoreLabel = SKLabelNode.init(text: highScoreLabelText + "\(HighScore.sharedInstance.highScore)")
@@ -303,8 +305,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 
                 setPhysicsForNearbyEnemies()
             }
-            // update the score label
-            scoreLabel.text = String(score)
+            // update the score
+            updateScore()
+            //scoreLabel.text = String(score)
+            
             
             // update high score label
             if score > HighScore.sharedInstance.highScore {
@@ -789,6 +793,42 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     //MARK: Misc --------------------------------------------
+    
+    func createScoreNode(scoreString:String) -> SKSpriteNode {
+        let characterSpacing:CGFloat = 1
+        let score: SKSpriteNode = SKSpriteNode()
+        let node: SKNode = SKNode()
+        //let scoreString = String(score)
+        var posX: CGFloat = 0
+        for char in scoreString.characters {
+            let digit:String = "\(char)"
+            
+            let digitTexture = SKTexture(imageNamed: "\(digit)")
+            digitTexture.filteringMode = .Nearest
+            let digitSprite:SKSpriteNode = SKSpriteNode(texture: digitTexture)
+            digitSprite.anchorPoint = CGPointMake(0, 0)
+            digitSprite.position = CGPointMake(posX, 0)
+            node.addChild(digitSprite)
+            posX += digitSprite.size.width + characterSpacing
+        }
+        let boundingBox: CGRect = node.calculateAccumulatedFrame()
+        let nodeX: CGFloat = -boundingBox.size.width / 2
+        let nodeY: CGFloat = -boundingBox.size.height / 2
+        node.position = CGPointMake(nodeX, nodeY)
+        score.addChild(node)
+        return score
+    }
+    
+    func updateScore() {
+        if scoreNode != nil {
+            scoreNode.removeFromParent()
+        }
+        scoreNode = createScoreNode(String(score))
+        scoreNode.position = CGPoint(x: hero.hero.size.width, y: 210)
+        scoreNode.setScale(2.0)
+        cam.addChild(scoreNode)
+    }
+    
     func restartGame() {
         // use separate function
         //print("DEAD")
