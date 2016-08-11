@@ -448,7 +448,7 @@
 				);
 				INFOPLIST_FILE = HungryHopper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.makeschool.HungryHopper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.roju.ChaseRace;
 				PRODUCT_NAME = "Chase Race";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
 			};
@@ -464,7 +464,7 @@
 				);
 				INFOPLIST_FILE = HungryHopper/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.makeschool.HungryHopper;
+				PRODUCT_BUNDLE_IDENTIFIER = com.roju.ChaseRace;
 				PRODUCT_NAME = "Chase Race";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/BridgingHeader.h";
 			};

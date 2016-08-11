@@ -277,8 +277,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                         let newBubble = addCollectible(nextGoalHeight)
                         hero.hero.addChild(newBubble)
                         
-                        print(newBubble.size.width)
-                        
                         for _ in 1...coinsToAdd {
                             let boundary = bubbleScale / 2
                             var randX = randomBetweenNumbers(-boundary, secondNum: boundary)
@@ -451,7 +449,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let verticalSpeed:CGFloat = randomBetweenNumbers(-0.4, secondNum: 0.4)
         
-        let enemyType = Int(randomBetweenNumbers(1, secondNum: 5))
+        let enemyType = Int(randomBetweenNumbers(1, secondNum: 6))
         
         //let gapSize = CGFloat(timerDelayValue)*(60*(speed/2)) - rectX
         //print(gapSize)
@@ -529,29 +527,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func setEnemyPhysicsBody(enemy:Enemy) {
-        var textureDimensions = CGSize(width: 49, height: 22)
         
-        switch enemy.textureName {
-        case "fish1":
-            textureDimensions = CGSize(width: 49, height: 22)
-            break
-        case "fish2":
-            textureDimensions = CGSize(width: 50, height: 35)
-            break
-        case "fish3":
-            textureDimensions = CGSize(width: 51, height: 32)
-            break
-        case "fish4":
-            textureDimensions = CGSize(width: 50, height: 25)
-            break
-        case "fish5":
-            textureDimensions = CGSize(width: 48, height: 18)
-            break
-        default:
-            break
-        }
-        
-        enemy.physicsBody = SKPhysicsBody.init(texture: enemy.texture!, size: textureDimensions)
+        //enemy.physicsBody = SKPhysicsBody.init(texture: enemy.texture!, size: enemy.texture!.size())
+        enemy.physicsBody = SKPhysicsBody.init(rectangleOfSize: enemy.texture!.size())
         enemy.physicsBody?.dynamic = true
         enemy.physicsBody?.affectedByGravity = false
         enemy.physicsBody?.collisionBitMask = 0
