@@ -8,9 +8,11 @@
 
 import Foundation
 
-class HighScore {
+class Singletons {
     var highScore = 0
+    var bestCombo = 0
+    var totalCoins = 0
     
-    static let sharedInstance = HighScore()
+    static let sharedInstance = Singletons()
     private init() {} //This prevents others from using the default '()' initializer for this class.
 }

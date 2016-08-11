@@ -8,9 +8,15 @@
 
 /*
  TODO:
- change score font
+ keep track of coins (per-level and total overall)
+ keep track of biggest combo
+ 
  add menus/buttons
  add sounds
+ 
+ add an indicator showing that you can hold down to move up
+ move variables to a plist file
+ add comments to variables
  
  improve performance (fix "skipping" hero movement)
  
@@ -56,6 +62,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var highScoreLabel:SKLabelNode!
     var highScoreLabelText = "Best: "
     
+    var coinsLabel:SKLabelNode!
+    var coinsLabelText = ""
+    
     var impulseX:CGFloat = 0.0
     //var impulseXContinuous:CGFloat = 0.05
     var cam:SKCameraNode!
@@ -82,6 +91,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     let yBoundary:CGFloat = 960
     
     var updatedHighScore = false
+    var updatedBestCombo = false
 
     //var starScale:CGFloat = 0.1
     
@@ -109,6 +119,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var initialMovement = false
     var moveShark = true
+    
+    var bestCombo = 0
+    
+    let sharkInitialPosition:CGFloat = -600
+    var heroSpeedIncrease:CGFloat = 0.1
+    var coinsToAddToTotal = 0
     
     //------------------------------------------------------
     
@@ -161,14 +177,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         updateScore()
         
         // create the high score label
-        highScoreLabel = SKLabelNode.init(text: highScoreLabelText + "\(HighScore.sharedInstance.highScore)")
+        highScoreLabel = SKLabelNode.init(text: highScoreLabelText + "\(Singletons.sharedInstance.highScore)")
+        highScoreLabel.horizontalAlignmentMode = .Left
         highScoreLabel.fontSize = 15
         highScoreLabel.fontName = "AvenirNext-Bold"
-        highScoreLabel.position = CGPoint(x: -70, y: 225)
+        highScoreLabel.position = CGPoint(x: -108, y: 225)
         highScoreLabel.fontColor = UIColor.whiteColor()
         
         // add the high score label as a child of camera
         cam.addChild(highScoreLabel)
+        
+        coinsLabel = SKLabelNode.init(text: "\(Singletons.sharedInstance.totalCoins)")
+        coinsLabel.horizontalAlignmentMode = .Left
+        coinsLabel.fontSize = 15
+        coinsLabel.fontName = "AvenirNext-Bold"
+        coinsLabel.position = CGPoint(x: -90, y: 209)
+        coinsLabel.fontColor = UIColor.whiteColor()
+        
+        cam.addChild(createCoin(CGPoint(x: -100, y: 215)))
+        cam.addChild(coinsLabel)
 
         /*
         mainButton = self.childNodeWithName("MainButton") as! MSButtonNode
@@ -242,12 +269,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             deathDelayCounter += FIXED_DELTA
             
+            let defaults = NSUserDefaults.standardUserDefaults()
+            
             // runs once: if player achieved a high score, save it
-            if score > HighScore.sharedInstance.highScore && !updatedHighScore{
-                let defaults = NSUserDefaults.standardUserDefaults()
-                HighScore.sharedInstance.highScore = score
+            if score > Singletons.sharedInstance.highScore && !updatedHighScore{
+                Singletons.sharedInstance.highScore = score
                 defaults.setInteger(score, forKey: "HighScore")
                 updatedHighScore = true
+            }
+            
+            // save total coins
+            defaults.setInteger(Singletons.sharedInstance.totalCoins, forKey: "TotalCoins")
+            
+            if bestCombo > Singletons.sharedInstance.bestCombo && !updatedHighScore{
+                //Singletons.sharedInstance.highScore = score
+                //defaults.setInteger(score, forKey: "HighScore")
+                updatedBestCombo = true
             }
         }
             
@@ -269,6 +306,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                     nextGoalHeight = -LEVEL_SPACING
                 }
                 score += 1
+                sharkSpeed += 0.02
                 
                 if isTouching && !holdingForCombo {
                     holdingForCombo = true
@@ -285,19 +323,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                             var randY = randomBetweenNumbers(-boundary, secondNum: boundary)
                             if coinsToAdd == 1 {randX = 0; randY = 0}
                             
-                            newBubble.addChild(addCoin(CGPoint(x:randX, y:randY)))
+                            newBubble.addChild(createCoin(CGPoint(x:randX, y:randY)))
                         }
                     }
                     
+                    // if player completes a combo, future combos increase speed more
+                    heroSpeedIncrease += 0.001
+                    
                     coinsToAdd += 1
                     bubbleScale += bubbleSizeIncrease
-                    heroImpulseY += 0.1
+                    heroImpulseY += heroSpeedIncrease
                     
                     /*
                     for collectible in collectibles {
                         collectible.runAction(SKAction.scaleTo(bubbleScale, duration: 0.2))
                     }
                     */
+                }
+                else {
+                    
                 }
                 
                 // randomize levels
@@ -311,8 +355,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             
             // update high score label
-            if score > HighScore.sharedInstance.highScore {
+            if score > Singletons.sharedInstance.highScore {
                 highScoreLabel.text = highScoreLabelText + String(score)
+            }
+            
+            if coinsToAddToTotal > 0 {
+                Singletons.sharedInstance.totalCoins += coinsToAddToTotal
+                coinsLabelText = "\(Singletons.sharedInstance.totalCoins)"
+                coinsLabel.text = coinsLabelText
+                coinsToAddToTotal = 0
             }
             
             // passed above level D: Hero reached the top and looped around to bottom of scene
@@ -549,7 +600,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         shark = SKSpriteNode.init(imageNamed: "shark_open_upscaled")
         shark.texture?.filteringMode = .Nearest
         shark.size = CGSizeMake(shark.size.width * 2, shark.size.height * 2)
-        shark.position = CGPointMake(-30, -600)
+        shark.position = CGPointMake(-30, sharkInitialPosition)
         shark.name = "shark"
         
         shark.physicsBody = SKPhysicsBody.init(texture: shark.texture!, size: shark.size)
@@ -605,18 +656,23 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //print("shark pos: \(shark.position.y)")
         
         if moveShark {
+            let closeToHero:CGFloat = -300
+            let maxDistance:CGFloat = -1500
+            
             // move shark
-            if shark.position.y >= -300 && initialMovement {
+            if shark.position.y >= closeToHero && initialMovement { // shark is close to hero
                 shark.runAction(SKAction.moveBy(CGVector(dx: 0, dy: sharkSpeed / 1.5), duration: 0))
             }
-            else if shark.position.y >= -600 && initialMovement {
+            else if shark.position.y >= maxDistance && initialMovement { // shark is far from hero but closer than maxDistance
                 shark.runAction(SKAction.moveBy(CGVector(dx: 0, dy: sharkSpeed), duration: 0))
             }
-            else {
-                shark.position.y = -600
+            else { // shark is further than max distance
+                shark.position.y = maxDistance
             }
         }
     }
+    
+    
     
     //MARK: Collectible ------------------------------------
     
@@ -645,7 +701,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         return collectible
     }
     
-    func addCoin(position:CGPoint) -> Coin {
+    func createCoin(position:CGPoint) -> Coin {
         let coinAnimatedAtlas = SKTextureAtlas(named: "coins")
         var coinFrames = [SKTexture]()
         
@@ -670,6 +726,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 restore: true)),
                 withKey:"rotatingCoin")
         
+        newCoin.name = "coin"
         coins.insert(newCoin)
         
         return newCoin
@@ -757,13 +814,14 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             
             //shark.position.y = 550//hero.hero.position.y
             //shark.position.x = 200//hero.hero.position.x
-            
-            
         }
     }
     
     func heroCollectibleContact(hero:Hero, collectible:Collectible){
         collectible.flaggedForRemoval = true
+        //print("collected coins: \(collectible.children.count)")
+        
+        coinsToAddToTotal = collectible.children.count
     }
     
     //MARK: Touch ------------------------------------------
@@ -824,7 +882,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scoreNode.removeFromParent()
         }
         scoreNode = createScoreNode(String(score))
-        scoreNode.position = CGPoint(x: hero.hero.size.width, y: 210)
+        scoreNode.position = CGPoint(x: 23, y: 210)
         scoreNode.setScale(2.0)
         cam.addChild(scoreNode)
     }

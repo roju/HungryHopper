@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //NSUserDefaults.standardUserDefaults().removePersistentDomainForName(NSBundle.mainBundle().bundleIdentifier!)
         
         // get the high score from device's long-term storage, store it in the high score singleton
-        HighScore.sharedInstance.highScore = NSUserDefaults.standardUserDefaults().objectForKey("HighScore") as? Int ?? 0
+        Singletons.sharedInstance.highScore = NSUserDefaults.standardUserDefaults().objectForKey("HighScore") as? Int ?? 0
         
         return true
     }

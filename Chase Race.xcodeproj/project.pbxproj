@@ -53,7 +53,7 @@
 		91BDF6D91D35878B009CE6FF /* MSButtonNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */; };
 		91BDF6DA1D35878B009CE6FF /* MSReferenceNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */; };
 		91D08B761D35B3930092D664 /* Enemy.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91D08B751D35B3930092D664 /* Enemy.swift */; };
-		91F9FC511D4FF04D00E26D01 /* HighScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F9FC501D4FF04D00E26D01 /* HighScore.swift */; };
+		91F9FC511D4FF04D00E26D01 /* Singletons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91F9FC501D4FF04D00E26D01 /* Singletons.swift */; };
 		91FE305C1D51150900F37756 /* Collectible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91FE305B1D51150900F37756 /* Collectible.swift */; };
 		91FE305E1D53C55D00F37756 /* bubble.png in Resources */ = {isa = PBXBuildFile; fileRef = 91FE305D1D53C55D00F37756 /* bubble.png */; };
 /* End PBXBuildFile section */
@@ -108,7 +108,7 @@
 		91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MSButtonNode.swift; path = HungryHopper/MSButtonNode.swift; sourceTree = "<group>"; };
 		91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MSReferenceNode.swift; path = HungryHopper/MSReferenceNode.swift; sourceTree = "<group>"; };
 		91D08B751D35B3930092D664 /* Enemy.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Enemy.swift; path = ../Enemy.swift; sourceTree = "<group>"; };
-		91F9FC501D4FF04D00E26D01 /* HighScore.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HighScore.swift; path = ../HighScore.swift; sourceTree = "<group>"; };
+		91F9FC501D4FF04D00E26D01 /* Singletons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Singletons.swift; path = ../Singletons.swift; sourceTree = "<group>"; };
 		91FE305B1D51150900F37756 /* Collectible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Collectible.swift; sourceTree = "<group>"; };
 		91FE305D1D53C55D00F37756 /* bubble.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bubble.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -163,7 +163,7 @@
 			children = (
 				91BDF6A01D306DF5009CE6FF /* GameScene.swift */,
 				91BDF69E1D306DF5009CE6FF /* GameScene.sks */,
-				91F9FC501D4FF04D00E26D01 /* HighScore.swift */,
+				91F9FC501D4FF04D00E26D01 /* Singletons.swift */,
 				9195E3AF1D402E9B0062FA6A /* Level.swift */,
 				9195E3AD1D3FEF440062FA6A /* Obstacle.swift */,
 				91BDF6B41D34247E009CE6FF /* Enemy.sks */,
@@ -308,7 +308,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				91BDF6D21D358210009CE6FF /* Hero.swift in Sources */,
-				91F9FC511D4FF04D00E26D01 /* HighScore.swift in Sources */,
+				91F9FC511D4FF04D00E26D01 /* Singletons.swift in Sources */,
 				91BDF6CB1D3574DB009CE6FF /* SKColor+Extensions.swift in Sources */,
 				91BDF6CF1D3574DB009CE6FF /* SKTTimingFunctions.swift in Sources */,
 				91BDF6D91D35878B009CE6FF /* MSButtonNode.swift in Sources */,

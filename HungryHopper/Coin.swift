@@ -7,8 +7,9 @@
 //
 
 import Foundation
+import SpriteKit
 
-class Coin:Collectible {
+class Coin:SKSpriteNode {
     var collected = false
     var parentCollectible:Collectible?
 }
