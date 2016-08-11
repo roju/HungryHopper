@@ -8,7 +8,10 @@
 
 /*
  TODO:
- keep track of coins (per-level and total overall)
+ animate hero
+ add turtle
+ 
+ show coins collected for the playthrough after death
  keep track of biggest combo
  
  add menus/buttons
@@ -116,6 +119,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     
     var shark:SKSpriteNode!
     var sharkSpeed:CGFloat = 6
+    
+    var turtle:SKSpriteNode!
+    var tutrtleSpeed:CGFloat = 1
     
     var initialMovement = false
     var moveShark = true
@@ -237,6 +243,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         //addCollectible(1440)
         
         addShark()
+        //spawnTurtle()
     }
     
     
@@ -614,6 +621,21 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         hero.hero.addChild(shark)
     }
     
+    func spawnTurtle() {
+        turtle = SKSpriteNode.init(imageNamed: "turtle_big")
+        turtle.texture?.filteringMode = .Nearest
+        turtle.position = CGPointMake(0, 200)
+        
+        turtle.physicsBody = SKPhysicsBody.init(texture: turtle.texture!, size: turtle.size)
+        turtle.physicsBody?.dynamic = true
+        turtle.physicsBody?.affectedByGravity = false
+        turtle.physicsBody?.collisionBitMask = 0
+        turtle.physicsBody?.contactTestBitMask = 1
+        turtle.physicsBody?.categoryBitMask = 0
+        
+        hero.hero.addChild(turtle)
+    }
+    
     func flagEnemiesOutOfBounds(){
         for enemy in enemies {
             if enemyIsOutOfBounds(enemy) {
@@ -670,8 +692,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 shark.position.y = maxDistance
             }
         }
+        
+        if turtle != nil {
+            //turtle.runAction(SKAction.moveBy(CGVector(dx: tutrtleSpeed, dy: 0), duration: 0))
+        }
     }
-    
     
     
     //MARK: Collectible ------------------------------------
@@ -829,9 +854,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         initialMovement = true
         isTouching = true
         
-        // flappy bird controls
-        //hero.hero.physicsBody?.velocity = CGVectorMake(0, 0)
-        //hero.hero.physicsBody?.applyImpulse(CGVectorMake(0, 1))//was 0.8
+        if gameState != .GameOver {
+            //animateHero()
+        }
     }
     override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Update to new touch location */
@@ -848,6 +873,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         for collectible in collectibles {
             collectible.runAction(SKAction.scaleTo(defaultBubbleScale, duration: 0.2))
         }
+        /*
+        if gameState != .GameOver {
+            let initialTexture = SKTexture(imageNamed: "fb1")
+            initialTexture.filteringMode = .Nearest
+            hero.hero.texture = initialTexture
+        }
+        */
     }
     
     //MARK: Misc --------------------------------------------
@@ -886,6 +918,25 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         scoreNode.setScale(2.0)
         cam.addChild(scoreNode)
     }
+    
+    /*
+    func animateHero() {
+        let heroAnimatedAtlas = SKTextureAtlas(named: "frogblob")
+        var heroFrames = [SKTexture]()
+        
+        let numImages = heroAnimatedAtlas.textureNames.count - 1
+        for index in 1...numImages {
+            let heroTextureName = "fb\(index)"
+            let textureToAdd = heroAnimatedAtlas.textureNamed(heroTextureName)
+            textureToAdd.filteringMode = .Nearest
+            heroFrames.append(textureToAdd)
+        }
+        let heroMovingFrames:[SKTexture]! = heroFrames
+        let firstFrame = heroFrames[0]
+        hero.hero.texture = firstFrame
+        hero.hero.runAction(SKAction.animateWithTextures(heroMovingFrames, timePerFrame: 0.05))
+    }
+    */
     
     func restartGame() {
         // use separate function

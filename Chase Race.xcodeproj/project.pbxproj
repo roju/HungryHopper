@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		911431951D5C1A0D00FC22AE /* boxybold.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 911431941D5C1A0D00FC22AE /* boxybold.atlas */; };
+		911431971D5D346D00FC22AE /* turtle_big.png in Resources */ = {isa = PBXBuildFile; fileRef = 911431961D5D346D00FC22AE /* turtle_big.png */; };
+		911431991D5D3A6D00FC22AE /* frogblob.atlas in Resources */ = {isa = PBXBuildFile; fileRef = 911431981D5D3A6D00FC22AE /* frogblob.atlas */; };
 		913A9FC71D4964A1009CA619 /* star1.png in Resources */ = {isa = PBXBuildFile; fileRef = 913A9FC61D4964A1009CA619 /* star1.png */; };
 		913A9FC91D4AA5E7009CA619 /* star2.svg in Resources */ = {isa = PBXBuildFile; fileRef = 913A9FC81D4AA5E7009CA619 /* star2.svg */; };
 		914569621D53E73E00B06048 /* restart.png in Resources */ = {isa = PBXBuildFile; fileRef = 914569601D53E73E00B06048 /* restart.png */; };
@@ -60,6 +62,8 @@
 
 /* Begin PBXFileReference section */
 		911431941D5C1A0D00FC22AE /* boxybold.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = boxybold.atlas; sourceTree = "<group>"; };
+		911431961D5D346D00FC22AE /* turtle_big.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = turtle_big.png; sourceTree = "<group>"; };
+		911431981D5D3A6D00FC22AE /* frogblob.atlas */ = {isa = PBXFileReference; lastKnownFileType = folder.skatlas; path = frogblob.atlas; sourceTree = "<group>"; };
 		913A9FC61D4964A1009CA619 /* star1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = star1.png; sourceTree = "<group>"; };
 		913A9FC81D4AA5E7009CA619 /* star2.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = star2.svg; sourceTree = "<group>"; };
 		914569601D53E73E00B06048 /* restart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = restart.png; sourceTree = "<group>"; };
@@ -141,6 +145,7 @@
 				91BDF69B1D306DF5009CE6FF /* HungryHopper */,
 				91BDF6D71D35878B009CE6FF /* MSButtonNode.swift */,
 				91BDF6D81D35878B009CE6FF /* MSReferenceNode.swift */,
+				911431981D5D3A6D00FC22AE /* frogblob.atlas */,
 				911431941D5C1A0D00FC22AE /* boxybold.atlas */,
 				914569C31D59482700B06048 /* fish.atlas */,
 				914569BD1D591EEE00B06048 /* coins.atlas */,
@@ -206,6 +211,7 @@
 		91D08B771D36C01E0092D664 /* images */ = {
 			isa = PBXGroup;
 			children = (
+				911431961D5D346D00FC22AE /* turtle_big.png */,
 				914569CB1D5A56D400B06048 /* shark_closed.png */,
 				914569C71D5A557B00B06048 /* shark_open_upscaled.png */,
 				914569CD1D5A597200B06048 /* fb5.png */,
@@ -296,7 +302,9 @@
 				913A9FC71D4964A1009CA619 /* star1.png in Resources */,
 				914569C41D59482700B06048 /* fish.atlas in Resources */,
 				91BDF6A61D306DF5009CE6FF /* Main.storyboard in Resources */,
+				911431971D5D346D00FC22AE /* turtle_big.png in Resources */,
 				914569621D53E73E00B06048 /* restart.png in Resources */,
+				911431991D5D3A6D00FC22AE /* frogblob.atlas in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
