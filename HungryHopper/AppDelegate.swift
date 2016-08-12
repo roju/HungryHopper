@@ -26,6 +26,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // get the high score from device's long-term storage, store it in the high score singleton
         Singletons.sharedInstance.highScore = NSUserDefaults.standardUserDefaults().objectForKey("HighScore") as? Int ?? 0
         
+        // get the total coins from storage
+        Singletons.sharedInstance.totalCoins = NSUserDefaults.standardUserDefaults().objectForKey("TotalCoins") as? Int ?? 0
+        
         return true
     }
 

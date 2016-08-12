@@ -120,8 +120,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var shark:SKSpriteNode!
     var sharkSpeed:CGFloat = 6
     
-    var turtle:SKSpriteNode!
-    var tutrtleSpeed:CGFloat = 1
+    var turtle:Enemy!
+    var tutrtleSpeed:CGFloat = 3
     
     var initialMovement = false
     var moveShark = true
@@ -622,9 +622,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     func spawnTurtle() {
-        turtle = SKSpriteNode.init(imageNamed: "turtle_big")
+        turtle = Enemy.init(imageNamed: "turtle_big")
         turtle.texture?.filteringMode = .Nearest
-        turtle.position = CGPointMake(0, 200)
+        turtle.position = CGPointMake(leftBoundary, randomBetweenNumbers(200, secondNum: 600))
+        turtle.name = "enemy"
         
         turtle.physicsBody = SKPhysicsBody.init(texture: turtle.texture!, size: turtle.size)
         turtle.physicsBody?.dynamic = true
@@ -694,7 +695,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if turtle != nil {
-            //turtle.runAction(SKAction.moveBy(CGVector(dx: tutrtleSpeed, dy: 0), duration: 0))
+            turtle.runAction(SKAction.moveBy(CGVector(dx: tutrtleSpeed, dy: 0), duration: 0))
         }
     }
     
